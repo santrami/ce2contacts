@@ -1,5 +1,4 @@
 import { INSTITUTES } from "@prisma/client";
-import Link from "next/link";
 
 interface InstituteProps {
   institutes: Array<INSTITUTES>;
@@ -15,9 +14,9 @@ const Institutes = ({ institutes }: InstituteProps) => {
           </div>
           <div className="flex flex-col gap-2">
             <span className="text-xl font-semibold">{institute.full_name}</span>
-            {/* <Link href={institute.url} className="text-xs font-semibold">{institute.url}</Link> */}
+            <a href={institute.url} target="_blank" className="text-xs font-semibold">{institute.url}</a>
+            <span className="text-xs font-semibold">{institute.short_name}</span>
             <span className="text-xs font-semibold">{institute.country}</span>
-            {/* <span className="text-xs font-semibold">{institute.short_name}</span> */}
           </div>
         </div>
       ))}
