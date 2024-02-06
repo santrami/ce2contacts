@@ -7,141 +7,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
+
+model Contact {
   id Int @id @default(autoincrement())
+  name String 
   email String @unique
+  organizationId Int
+  projectParticipation Boolean
+  isActive Boolean @default(true)
+
+  organization Organization? @relation(fields: [organizationId], references: [id])
+}
+
+model Organization {
+  id Int @id @default(autoincrement())
+  acronym String @unique
+  fullName String
+  regionalName String?
+  website String
+  country String
+
+  contacts Contact[]
+}
+
+model User {
+  id Int @id @default(autoincrement())
   username String @unique
-  password String  
-}
-
-model ASSO_TASKS_CONTACTS {
-  task_id    Int
-  contact_id Int
-  CONTACTS   CONTACTS @relation(fields: [contact_id], references: [contact_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ContactId")
-  TASKS      TASKS    @relation(fields: [task_id], references: [task_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_TaskId")
-
-  @@id([task_id, contact_id])
-  @@index([contact_id], map: "FK_ContactId")
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model CONTACTS {
-  contact_id          Int                   @id @default(autoincrement())
-  institute_id        Int
-  first_name          String                @db.VarChar(255)
-  last_name           String                @db.VarChar(255)
-  email               String                @db.VarChar(255)
-  job_title           String?               @default("NONE") @db.VarChar(255)
-  gender              CONTACTS_gender
-  ASSO_TASKS_CONTACTS ASSO_TASKS_CONTACTS[]
-  INSTITUTES          INSTITUTES            @relation(fields: [institute_id], references: [institute_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_InstituteId")
-
-  @@index([institute_id], map: "FK_InstituteId")
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model INSTITUTES {
-  institute_id Int        @id @default(autoincrement())
-  short_name   String     @db.VarChar(50)
-  full_name    String     @db.VarChar(255)
-  url          String     @db.VarChar(2048)
-  country      String     @db.VarChar(255)
-  CONTACTS     CONTACTS[]
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model Participants_CE2_6_ {
-  Programme          String? @db.Text
-  Grant_agreement_ID String? @map("Grant agreement ID") @db.Text
-  Project            String? @db.Text
-  Participants       String? @db.Text
-  Country            String? @db.Text
-  EU_contribution    String? @map("EU contribution") @db.Text
-  Activity_type      String? @map("Activity type") @db.Text
-  Coordinator        String? @db.Text
-  Keywords           String? @db.Text
-
-  @@map("Participants_CE2(6)")
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model Projects_CE2_6_ {
-  Programme                      String? @db.Text
-  Grant_agreement_ID             String? @map("Grant agreement ID") @db.Text
-  Project_acronym                String? @map("Project acronym") @db.Text
-  Title                          String? @db.Text
-  URL                            String? @db.Text
-  Project_start_date             String? @map("Project start date") @db.Text
-  Project_end_date               String? @map("Project end date") @db.Text
-  Funded_under                   String? @map("Funded under") @db.Text
-  Total_cost                     String? @map("Total cost") @db.Text
-  EU_contribution                String? @map("EU contribution") @db.Text
-  Main_program                   String? @map("Main program") @db.Text
-  Programmes                     String? @db.Text
-  Topics                         String? @db.Text
-  Call_for_proposal              String? @map("Call for proposal") @db.Text
-  Funding_scheme                 String? @map("Funding scheme") @db.Text
-  Coordinated_by                 String? @map("Coordinated by") @db.Text
-  EU_contribution_to_coordinator String? @map("EU contribution to coordinator") @db.Text
-  Programme_period               String? @map("Programme period") @db.Text
-  Keywords                       String? @db.Text
-
-  @@map("Projects_CE2(6)")
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model Sister_projects_Participants_1_ {
-  Programme          String? @db.Text
-  Grant_agreement_ID BigInt? @map("Grant agreement ID")
-  Project            String? @db.Text
-  Participants       String? @db.Text
-  Country            String? @db.Text
-  EU_contribution    String? @map("EU contribution") @db.Text
-  Activity_type      String? @map("Activity type") @db.Text
-  Coordinator        String? @db.Text
-
-  @@map("Sister projects_Participants(1)")
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model Sister_projects_Projects_1_ {
-  Programme                      String? @db.Text
-  Grant_agreement_ID             BigInt? @map("Grant agreement ID")
-  Project_acronym                String? @map("Project acronym") @db.Text
-  Title                          String? @db.Text
-  URL                            String? @db.Text
-  Project_start_date             String? @map("Project start date") @db.Text
-  Project_end_date               String? @map("Project end date") @db.Text
-  Funded_under                   String? @map("Funded under") @db.Text
-  Total_cost                     String? @map("Total cost") @db.Text
-  EU_contribution                String? @map("EU contribution") @db.Text
-  Main_program                   String? @map("Main program") @db.Text
-  Programmes                     String? @db.Text
-  Topics                         String? @db.Text
-  Call_for_proposal              String? @map("Call for proposal") @db.Text
-  Funding_scheme                 String? @map("Funding scheme") @db.Text
-  Coordinated_by                 String? @map("Coordinated by") @db.Text
-  EU_contribution_to_coordinator String? @map("EU contribution to coordinator") @db.Text
-  Programme_period               String? @map("Programme period") @db.Text
-  Keywords                       String? @db.Text
-  Classification                 String? @db.Text
-
-  @@map("Sister projects_Projects(1)")
-  @@ignore
-}
-
-model TASKS {
-  task_id             Int                   @id @default(autoincrement())
-  name                String                @db.VarChar(255)
-  description         String?               @default("NONE") @db.VarChar(2048)
-  ASSO_TASKS_CONTACTS ASSO_TASKS_CONTACTS[]
-}
-
-enum CONTACTS_gender {
-  M
-  F
-  N
+  password String
+  role String
 }
