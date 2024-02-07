@@ -11,8 +11,8 @@ model contact {
   id                   Int           @id @default(autoincrement())
   name                 String        @db.VarChar(255)
   email                String        @unique(map: "email") @db.VarChar(255)
-  organizationId       Int?
-  projectParticipation Boolean?
+  organizationId       Int
+  projectParticipation Boolean
   isActive             Boolean
   organization         organization? @relation(fields: [organizationId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contact_ibfk_1")
 
@@ -25,7 +25,7 @@ model organization {
   fullName     String    @db.VarChar(255)
   regionalName String?   @db.VarChar(255)
   website      String    @db.VarChar(255)
-  country      String?   @db.VarChar(2)
+  country      String?   @db.VarChar(255)
   contact      contact[]
 }
 
