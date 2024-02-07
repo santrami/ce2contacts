@@ -1,6 +1,6 @@
-import { INSTITUTES } from "@prisma/client";
+import { organization } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from '@/lib/prismadb'
+import prisma from "@/lib/prismadb";
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,18 +15,30 @@ export default async function handler(
       }
 
       /**
-       * Search posts
+       * Search organization
        */
-      const institutes: Array<INSTITUTES> = await prisma.iNSTITUTES.findMany({
-        where: {           
-              full_name: {
-                contains: query,
-                //mode: "insensitive",
+      const organization: Array<organization> =
+        await prisma.organization.findMany({
+          where: {
+            OR: [
+              {
+                fullName: {
+                  contains: query,
+                },
               },
-            },        
-        },
-        
-      );
+              {
+                acronym: {
+                  contains: query,
+                },
+              },
+              {
+                country: {
+                  contains: query,
+                },
+              },
+            ],
+          },
+        });
 
       /**
        * Save search
@@ -37,7 +49,7 @@ export default async function handler(
         },
       }); */
 
-      res.status(200).json({ institutes });
+      res.status(200).json({ organization });
     } catch (error: any) {
       console.log(error);
       res.status(500).end();

@@ -36,7 +36,7 @@ const SearchPage = () => {
     return <Spinner />;
   }
 
-  if (!data?.institutes) {
+  if (!data?.organization) {
     return null;
   }
 
@@ -46,7 +46,7 @@ const SearchPage = () => {
         Showing results for:{" "}
         <span className="font-semibold">{searchQuery}</span>
       </span>
-      <Institutes institutes={data.institutes} />
+      <Institutes organization={data.organization} />
     </>
   );
 };

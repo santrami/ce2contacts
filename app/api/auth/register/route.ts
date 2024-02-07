@@ -41,7 +41,8 @@ export async function POST (request:NextRequest){
         data: {
             username: data.username,
             email: data.email,
-            password: hashPassword
+            password: hashPassword,
+            role:"user"
         }
     })
 
