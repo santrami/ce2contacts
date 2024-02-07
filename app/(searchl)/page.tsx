@@ -2,7 +2,7 @@ import prisma from "@/lib/prismadb";
 import Institutes from "../Institutes";
 
 export default async function Home() {
-  const institutes = await prisma.iNSTITUTES.findMany();
+  const organization = await prisma.organization.findMany();
 
-  return <Institutes institutes={institutes} />;
+  return <Institutes organization={organization} />;
 }

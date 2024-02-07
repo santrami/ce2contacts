@@ -7,32 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model contact {
+  id                   Int           @id @default(autoincrement())
+  name                 String        @db.VarChar(255)
+  email                String        @unique(map: "email") @db.VarChar(255)
+  organizationId       Int?
+  projectParticipation Boolean?
+  isActive             Boolean
+  organization         organization? @relation(fields: [organizationId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contact_ibfk_1")
 
-model Contact {
-  id Int @id @default(autoincrement())
-  name String 
-  email String @unique
-  organizationId Int
-  projectParticipation Boolean
-  isActive Boolean @default(true)
-
-  organization Organization? @relation(fields: [organizationId], references: [id])
+  @@index([organizationId], map: "organizationId")
 }
 
-model Organization {
-  id Int @id @default(autoincrement())
-  acronym String @unique
-  fullName String
-  regionalName String?
-  website String
-  country String
-
-  contacts Contact[]
+model organization {
+  id           Int       @id @default(autoincrement())
+  acronym      String    @unique(map: "acronym") @db.VarChar(255)
+  fullName     String    @db.VarChar(255)
+  regionalName String?   @db.VarChar(255)
+  website      String    @db.VarChar(255)
+  country      String?   @db.VarChar(2)
+  contact      contact[]
 }
 
-model User {
-  id Int @id @default(autoincrement())
-  username String @unique
-  password String
-  role String
+model user {
+  id       Int    @id @default(autoincrement())
+  username String @unique(map: "username") @db.VarChar(255)
+  password String @db.VarChar(255)
+  role     String @db.VarChar(255)
 }

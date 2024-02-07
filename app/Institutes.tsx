@@ -1,22 +1,22 @@
-import { INSTITUTES } from "@prisma/client";
+import { organization } from "@prisma/client";
 
-interface InstituteProps {
-  institutes: Array<INSTITUTES>;
+interface organizationProps {
+  organization: Array<organization>;
 }
 
-const Institutes = ({ institutes }: InstituteProps) => {
+const Institutes = ({ organization }: organizationProps) => {
   return (
     <>
-      {institutes.map((institute, index) => (
+      {organization.map((organization, index) => (
         <div key={index} className="flex p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-3/4">
           <div>
 
           </div>
           <div className="flex flex-col gap-2">
-            <span className="text-xl font-semibold">{institute.full_name}</span>
-            <a href={institute.url} target="_blank" className="text-xs font-semibold">{institute.url}</a>
-            <span className="text-xs font-semibold">{institute.short_name}</span>
-            <span className="text-xs font-semibold">{institute.country}</span>
+            <span className="text-xl font-semibold">{organization.fullName}</span>
+            <a href={organization.website} target="_blank" className="text-xs font-semibold">{organization.website}</a>
+            <span className="text-xs font-semibold">{organization.acronym}</span>
+            <span className="text-xs font-semibold">{organization.country}</span>
           </div>
         </div>
       ))}
