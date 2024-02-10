@@ -1,15 +1,19 @@
-import { organization } from "@prisma/client";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { contact, organization } from "@prisma/client";
+import { CSVLink } from "react-csv";
+import Contact from "./Contact";
 
 interface organizationProps {
-  organization: Array<organization>;
+  organization: Array<organization & { contact: contact }>;
 }
 
 const Institutes = ({ organization }: organizationProps) => {
+  
   return (
     <>
-      {organization.map((organization, index) => (
-        <div key={index} className="flex justify-between p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-3/4">
+      {organization.map((organization) => (
+        <div key={organization.id} className="flex justify-between p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-3/4">
           <div className="flex flex-col gap-2">
             <span className="text-xl font-semibold">
               {organization.fullName}
@@ -28,9 +32,11 @@ const Institutes = ({ organization }: organizationProps) => {
               {organization.country}
             </span>
           </div>
-          <div className="self-center text-slate-400">
-            <Link href={"/test"}>see contacts</Link>
-          </div>
+          
+          {/* <Contact contact={organization.contact}/> */}
+          {/* <div>{organization.contact.name}</div> */}
+
+
         </div>
       ))}
     </>

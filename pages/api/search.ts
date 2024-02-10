@@ -1,4 +1,4 @@
-import { organization } from "@prisma/client";
+import { organization, contact } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prismadb";
 
@@ -36,6 +36,11 @@ export default async function handler(
                   contains: query,
                 },
               },
+              {
+                regionalName: {
+                  contains: query,
+                },
+              },
             ],
           },
         });
@@ -49,7 +54,46 @@ export default async function handler(
         },
       }); */
 
-      res.status(200).json({ organization });
+      const contact: Array<contact> =
+        await prisma.contact.findMany({
+          where: {
+            OR: [
+              {
+                name: {
+                  contains: query,
+                },
+              },
+              {
+                email: {
+                  contains: query,
+                },
+              },
+            ],
+          },
+          include: {
+            organization: true,
+          },
+        });
+
+      /**
+       * Save search
+       */
+      /* await prisma.searchQuery.create({
+        data: {
+          query,
+        },
+      }); */
+      console.log(contact);
+      
+      
+
+      if(contact.length!==0){
+        res.status(200).json({ contact, organization });
+      }else{
+
+        res.status(200).json({ organization, contact });
+      }
+
     } catch (error: any) {
       console.log(error);
       res.status(500).end();
