@@ -3,10 +3,10 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import Spinner from "./Spinner";
-import Institutes from "../Institutes";
+import Organization from "../Organization";
 import Contact from "../Contact";
 
-const fetchInstitutes = async (url: string) => {
+const fetchOrganization = async (url: string) => {
   const response = await fetch(url);
 
   if (!response.ok) {
@@ -18,8 +18,6 @@ const fetchInstitutes = async (url: string) => {
 
 //data for csv
 
-
-
 const SearchPage = () => {
   const search = useSearchParams();
   const searchQuery = search ? search.get("q") : null;
@@ -29,64 +27,44 @@ const SearchPage = () => {
 
   const { data, isLoading } = useSWR(
     `/api/search?q=${encodedSearchQuery}`,
-    fetchInstitutes,
+    fetchOrganization,
     { revalidateOnFocus: false }
   );
 
-  
-  
   if (!encodedSearchQuery) {
     router.push("/");
   }
-  
+
   if (isLoading) {
     return <Spinner />;
   }
-  
+
   if (!data.organization && !data.contact) {
     return null;
   }
   console.log(data);
 
- 
-
-  
-
-  // return (
-  //   <>
-  //     <span className="text-xl">
-  //       Showing results for:{" "}
-  //       <span className="font-semibold">{searchQuery}</span>
-  //     </span>
-  //     <Institutes organization={data.organization} />
-  //   </>
-  // );
-
-  if ((data.organization)) {
+  if (data.organization.length !== 0 ) {
+    
     return (
       <>
         <span className="text-xl">
           Showing results for:{" "}
           <span className="font-semibold">{searchQuery}</span>
         </span>
-        <Institutes organization={data.organization} />
+        <Organization organization={data.organization} />
         <Contact contact={data.contact} />
       </>
     );
-  } else if(data.contact){
+  } else {
     return (
       <>
         <span className="text-xl">
-          Showing results for:{" "}
-          <span className="font-semibold">{searchQuery}</span>
+          <span className="font-semibold">Nothing Found</span>
         </span>
-        <Contact contact={data.contact} />
-        {/* <Institutes organization={data.organization} /> */}
       </>
     );
   }
-
-  
 };
 
 export default SearchPage;

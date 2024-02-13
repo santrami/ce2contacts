@@ -75,6 +75,8 @@ export default async function handler(
           },
         });
 
+
+
       /**
        * Save search
        */
@@ -83,16 +85,7 @@ export default async function handler(
           query,
         },
       }); */
-      console.log(contact);
-      
-      
-
-      if(contact.length!==0){
-        res.status(200).json({ contact, organization });
-      }else{
-
-        res.status(200).json({ organization, contact });
-      }
+      res.status(200).json({ organization, contact });
 
     } catch (error: any) {
       console.log(error);
