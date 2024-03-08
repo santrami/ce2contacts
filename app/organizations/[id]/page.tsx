@@ -42,15 +42,16 @@ export default function Page({params}: {
   const { data, error, isLoading } = useSWR<Organization>(
     `/api/organizations?id=${params.id}`,
     fetchOrganization,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false, revalidateOnReconnect: false, shouldRetryOnError: false }
   );
 
   console.log("datos",data);
   
 
   if (error) return <div>Error loading organization</div>;
-
-  if (isLoading) return <Spinner />;
+    
+  if (isLoading) return <div className="flex h-screen justify-center items-center"> <Spinner /> </div>
+  
 
   return <OrganizationDetails organization={data} />;
 };

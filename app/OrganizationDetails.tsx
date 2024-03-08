@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Contact from "./Contact";
 import { CSVLink } from "react-csv";
+import Link from "next/link";
 
 interface Contacts {
   id: number;
@@ -45,7 +46,7 @@ function OrganizationDetails(organization: Props) {
     <>
     <div className="flex flex-col gap-10 items-center p-6">
       <div key={organization.organization?.id} className="flex justify-between p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-3/4">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 w-full items-center bg-gray-800 p-5">
           <span className="text-xl font-semibold">
             {organization.organization?.fullName}
           </span>
@@ -66,6 +67,8 @@ function OrganizationDetails(organization: Props) {
       </div>
       <div>
       <div>
+        <Button><Link href="/">Volver
+        </Link></Button>
         <h1>Contacts</h1>
       </div>
       
@@ -79,7 +82,7 @@ function OrganizationDetails(organization: Props) {
         </div>
       <div className="w-3/4">
             {organization.organization?.contact.map((contact) => (
-              <Contact contact={contact} />
+              <Contact key={contact.id} contact={contact} />
             ))}
       </div>
       </div>

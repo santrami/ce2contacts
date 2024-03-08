@@ -106,9 +106,9 @@ const Organization = ({ organization }: organizationProps | organizationAlonePro
           </Link>
         </div>
       ))}
-      <div className="pagination">
+      <div className="flex justify-center items-center gap-7 text-gray-400 p-7 text-2xl">
         {[...Array(totalPages)].map((e, i) => 
-          <button key={i} onClick={() => handlePageChange(i + 1)}>
+          <button className="hover:scale-150 transition-all focus:bg-gray-400 p-1 focus:text-slate-950 focus:rounded-full" key={i} onClick={() => handlePageChange(i + 1)}>
             {i + 1}
           </button>
         )}

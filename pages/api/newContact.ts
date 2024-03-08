@@ -19,15 +19,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const createdContact = await prisma.contact.create({
                 data: {
                     ...newContactData,
-                    organizationId: 2,
+                    organizationId: Number (newContactData.organizationId),
                     isActive:true
                 }
             });
             console.log('Contacto creado:', createdContact);
             res.status(201).json(createdContact);
         } catch (error) {
-            console.error('Error al crear el contacto:', error);
-            res.status(500).json({ error: 'Error al crear el contacto' });
+            console.error(error);
+            res.status(500).json({ error });
+            
         }
     } else {
         res.status(405).json({ error: 'Método no permitido' });

@@ -8,25 +8,28 @@ datasource db {
 }
 
 model contact {
-  id                   Int           @id @default(autoincrement())
-  name                 String        @db.VarChar(255)
-  email                String        @unique(map: "email") @db.VarChar(255)
+  id                   Int             @id @default(autoincrement())
+  name                 String          @db.VarChar(255)
+  email                String          @unique(map: "email") @db.VarChar(255)
   organizationId       Int?
   projectParticipation Boolean?
   isActive             Boolean
-  organization         organization? @relation(fields: [organizationId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contact_ibfk_1")
+  organization         organization?   @relation(fields: [organizationId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contact_ibfk_1")
+  participation        participation[]
 
   @@index([organizationId], map: "organizationId")
 }
 
 model organization {
-  id           Int       @id @default(autoincrement())
-  acronym      String    @unique(map: "acronym") @db.VarChar(255)
-  fullName     String    @db.VarChar(255)
-  regionalName String?   @db.VarChar(255)
-  website      String    @db.VarChar(255)
-  country      String?   @db.VarChar(255)
-  contact      contact[]
+  id            Int             @id @default(autoincrement())
+  acronym       String          @unique(map: "acronym") @db.VarChar(255)
+  fullName      String          @db.VarChar(255)
+  regionalName  String?         @db.VarChar(255)
+  website       String          @db.VarChar(255)
+  country       String?         @db.VarChar(255)
+  contact       contact[]
+  event         event[]
+  participation participation[]
 }
 
 model user {
@@ -35,4 +38,51 @@ model user {
   email    String @unique(map: "email") @db.VarChar(255)
   password String @db.VarChar(255)
   role     String @db.VarChar(255)
+}
+
+model event {
+  id              Int             @id @default(autoincrement())
+  name            String          @db.VarChar(255)
+  internalID      String          @db.VarChar(255)
+  scheduledDate   DateTime        @db.DateTime(0)
+  duration        Int
+  usersRegistered Int
+  usersApproved   Int
+  usersDenied     Int
+  usersCancelled  Int
+  organizationId  Int?
+  organization    organization?   @relation(fields: [organizationId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_ibfk_1")
+  participation   participation[]
+
+  @@index([organizationId], map: "organizationId")
+}
+
+model participation {
+  id                Int                          @id @default(autoincrement())
+  contactId         Int
+  organizationId    Int
+  eventId           Int
+  registrationTime  DateTime                     @db.DateTime(0)
+  timeParticipation Int
+  approvalStatus    participation_approvalStatus @default(pending)
+  isHost            Int                          @db.TinyInt
+  contact           contact                      @relation(fields: [contactId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participation_ibfk_1")
+  event             event                        @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participation_ibfk_2")
+  organization      organization                 @relation(fields: [organizationId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participation_ibfk_4")
+
+  @@index([contactId], map: "contactId")
+  @@index([eventId], map: "eventId")
+  @@index([organizationId], map: "organizationId")
+}
+
+model sector {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(255)
+}
+
+enum participation_approvalStatus {
+  pending
+  approved
+  denied
+  cancelled
 }

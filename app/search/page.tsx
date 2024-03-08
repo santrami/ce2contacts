@@ -44,7 +44,7 @@ const SearchPage = () => {
   }
   console.log(data);
 
-  if (data.organization.length !== 0 ) {
+  if (data.organization.length !== 0 || data.contact.length !== 0 ) {
     
     return (
       <>

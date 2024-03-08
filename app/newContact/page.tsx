@@ -1,43 +1,64 @@
-"use client"
-import NewContactForm from '../../components/ui/NewContactForm';
+"use client";
+import { useEffect, useState } from "react";
+import NewContactForm from "../../components/ui/NewContactForm";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface ContactData {
-    name: string;
-    email: string;
-    organizationId: number;
-    projectParticipation: boolean;
-    isActive: boolean;
+  name: string;
+  email: string;
+  organizationId: number;
+  projectParticipation: boolean;
+  isActive: boolean;
 }
 
-const NewContactPage: React.FC = () => {
-    const handleCreateContact = async (newContact: ContactData) => {
-        try {
-            const response = await fetch('/api/newContact', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newContact),
-            });
+const NewContactPage = () => {
+    const [error, setError] = useState(null);
+    const [orgs, setOrgs] = useState<{ id: number; acronym: string; fullName: string; regionalName: string | null; website: string; country: string | null; }[]>([]);
 
-            if (!response.ok) {
-                throw new Error('Error al crear el contacto');
-            }
+    useEffect(() => {
+        organizations();
+    }, []);
+  const handleCreateContact = async (newContact: ContactData) => {
+    try {
+      const response = await fetch("/api/newContact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newContact),
+      });
 
-            console.log('Nuevo contacto creado:', newContact);
-            // Aquí puedes realizar cualquier acción adicional después de crear el contacto
-        } catch (error) {
-            console.error('Error al crear el contacto:', error);
-            // Aquí puedes manejar el error de manera apropiada
-        }
-    };
+      if (!response.ok) {
+        const errorData = await response.json(); // Obtén los datos de error del servidor
+        console.log(errorData);
+        throw new Error(errorData.error.meta.target); // Lanza un error con el mensaje del servidor
+      }
+      
+      console.log("Nuevo contacto creado:", newContact);
+      toast.success("Nuevo contacto creado:")
+      // Aquí puedes realizar cualquier acción adicional después de crear el contacto
+    } catch (error:any) {
+      console.error(error);
+      setError(error.message)
+      toast.error(`${error.message} already exists`)
+    }
+  };
 
-    return (
-        <div>
-            <h1>Nuevo Contacto</h1>
-            <NewContactForm onCreateContact={handleCreateContact} />
-        </div>
-    );
+  const organizations = async ()=>{
+    const orgs = await fetch("/api/organizationList")
+    const res= await orgs.json()
+    console.log(res);
+    
+    setOrgs(res.organization)
+  }
+
+  return (
+    <div>
+      <ToastContainer/>
+      <NewContactForm organization={orgs} onCreateContact={handleCreateContact} />
+    </div>
+  );
 };
 
 export default NewContactPage;
