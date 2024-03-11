@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import NewContactForm from "../../components/ui/NewContactForm";
+import NewContactForm from "../../components/NewContactForm";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

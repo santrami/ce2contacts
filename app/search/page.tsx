@@ -3,8 +3,8 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import Spinner from "./Spinner";
-import Organization from "../Organization";
-import Contact from "../Contact";
+import Organization from "../../components/Organization";
+import Contact from "../../components/Contact";
 
 const fetchOrganization = async (url: string) => {
   const response = await fetch(url);

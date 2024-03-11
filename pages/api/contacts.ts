@@ -1,4 +1,4 @@
-//this endpoint is used for sending organization by id and their contacts to organization details
+//this endpoint is used for sending contact by id and their events to contact details
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prismadb";
@@ -15,20 +15,21 @@ export default async function handler(
 
   if (req.method === "GET") {
     try {
-      const organization = await prisma.organization.findUniqueOrThrow({
+      const contact = await prisma.contact.findUniqueOrThrow({
         where: {
           id: parseInt(id),
         },
         include: {
-          contact: true,
+          participation: true,
+          organization:true
         },
       });
 
-      if (!organization) {
+      if (!contact) {
         return res.status(404).json({ message: "Organization not found" });
       }
 
-      res.status(200).json(organization);
+      res.status(200).json(contact);
     } catch (error) {
       console.log(error);
       res.status(500).end();

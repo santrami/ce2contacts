@@ -1,3 +1,5 @@
+/* this endpoint allows to fetch organizations, it's used in newcontact form for select organization for new contact*/
+
 import { organization} from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prismadb";

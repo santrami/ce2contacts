@@ -1,3 +1,6 @@
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
 interface ContactProps {
   contact: {
     id: number;
@@ -29,6 +32,9 @@ const Contact: React.FC<ContactProps> = ({ contact }) => {
                 {contact.projectParticipation}
               </span>
             </div>
+            <Link href={`/contacts/${contact.id}`}>
+            <Button>Ver detalle</Button>
+          </Link>
           </div>
         ))}
       </>
@@ -44,6 +50,9 @@ const Contact: React.FC<ContactProps> = ({ contact }) => {
             {contact.projectParticipation}
           </span>
         </div>
+        <Link href={`/contacts/${contact.id}`}>
+            <Button>Ver detalle</Button>
+          </Link>
       </div>
     );
   }

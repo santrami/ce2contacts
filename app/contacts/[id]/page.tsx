@@ -1,9 +1,16 @@
 "use client"
 import useSWR from "swr";
-import OrganizationDetails from "../../../components/OrganizationDetails";
 import Spinner from "@/app/search/Spinner";
+import ContactDetails from "@/components/ContactDetails";
 
-
+interface Participation {
+  id: number;
+  contactId:number,
+  organizationId: number;
+  eventId: number;
+  registrationTime: Date;
+  timeParticipation: number;
+}
 
 interface Contact {
   id: number;
@@ -12,16 +19,7 @@ interface Contact {
   organizationId: number;
   projectParticipation: boolean;
   isActive: boolean;
-}
-
-interface Organization {
-  id: number;
-  acronym: string;
-  fullName: string;
-  regionalName: string;
-  website: string;
-  country: string;
-  contact: Array<Contact>;
+  contact: Array<Participation>;
 }
 
 const fetchOrganization = async (url: string) => {
@@ -39,8 +37,8 @@ export default function Page({params}: {
 }) 
 {
 
-  const { data, error, isLoading } = useSWR<Organization>(
-    `/api/organizations?id=${params.id}`,
+  const { data, error, isLoading } = useSWR<Contact>(
+    `/api/contacts?id=${params.id}`,
     fetchOrganization,
     { revalidateOnFocus: false, revalidateOnReconnect: false, shouldRetryOnError: false }
   );
@@ -53,6 +51,6 @@ export default function Page({params}: {
   if (isLoading) return <div className="flex h-screen justify-center items-center"> <Spinner /> </div>
   
 
-  return <OrganizationDetails organization={data} />;
+  return <ContactDetails contact={data} />;
 };
 

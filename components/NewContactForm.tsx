@@ -88,7 +88,7 @@ const NewContactForm: React.FC<NewContactFormProps> = ({ organization, onCreateC
             {errors.email && <span className="text-red-500">{errors.email.message}</span>}
     
             <label className="text-slate-500 mb-2 block text-sm">
-              is CE2 Participant:
+              is ClimateEurope2 Participant?
             </label>
             <input
               type="checkbox"
@@ -116,7 +116,7 @@ const NewContactForm: React.FC<NewContactFormProps> = ({ organization, onCreateC
             {errors.organizationId && <span className="text-red-500">{errors.organizationId.message}</span>}
     
             <button className="w-full bg-blue-500 text-white p-3 rounded-lg">
-              Crear contacto
+              Create Contact
             </button>
           </form>
         </div>

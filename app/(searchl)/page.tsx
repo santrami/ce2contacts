@@ -1,5 +1,5 @@
 import prisma from "@/lib/prismadb";
-import Organization from "../Organization";
+import Organization from "../../components/Organization";
 
 export default async function Home() {
   const organization = await prisma.organization.findMany();
