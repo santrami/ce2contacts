@@ -3,14 +3,13 @@ import Link from "next/link";
 
 interface Participation {
     id: number;
-    contactId:number,
-    organizationId: number;
-    eventId: number;
+    organization: string | undefined;
+    event: string;
     registrationTime: Date;
     timeParticipation: number;
   }
 
-interface ContactProps {
+/* interface ContactProps {
   contact: {
     id: number;
     name: string;
@@ -20,12 +19,10 @@ interface ContactProps {
     isActive: boolean;
     participation: Participation;
   }
-}
+} */
 
 
-const Participation: React.FC<ContactProps> = ({ participation }) => {
-    console.log("en Participation",participation);
-    
+const Participation = (participation:Participation) => {        
   if (Array.isArray(participation)) {
     // if array, map and render each element
     return (
@@ -48,10 +45,10 @@ const Participation: React.FC<ContactProps> = ({ participation }) => {
     return (
       <div key={participation.id} className="p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600">
         <div className="flex flex-col gap-2 items-center">
-          <span className="text-xl font-semibold">{participation.organizationId}</span>
-          {participation.email}
+          <span className="text-xl font-semibold">{participation.organization}</span>
+          {participation.organization}
           <span className="text-xs font-semibold">
-            {participation.projectParticipation}
+            {participation.event} 
           </span>
         </div>
       </div>

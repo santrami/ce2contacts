@@ -3,13 +3,21 @@ import useSWR from "swr";
 import Spinner from "@/app/search/Spinner";
 import ContactDetails from "@/components/ContactDetails";
 
-interface Participation {
+interface ParticipationProps {
   id: number;
   contactId:number,
   organizationId: number;
   eventId: number;
   registrationTime: Date;
   timeParticipation: number;
+}
+interface Organization{
+  id: number;
+  acronym: string;
+  fullName: string;
+  regionalName: string;
+  website: string;
+  country: string;
 }
 
 interface Contact {
@@ -19,7 +27,8 @@ interface Contact {
   organizationId: number;
   projectParticipation: boolean;
   isActive: boolean;
-  contact: Array<Participation>;
+  participation: Array<ParticipationProps>;
+  organization: Organization;
 }
 
 const fetchOrganization = async (url: string) => {
@@ -42,14 +51,14 @@ export default function Page({params}: {
     fetchOrganization,
     { revalidateOnFocus: false, revalidateOnReconnect: false, shouldRetryOnError: false }
   );
-
-  console.log("datos",data);
   
-
+  
+  
   if (error) return <div>Error loading organization</div>;
-    
+  
   if (isLoading) return <div className="flex h-screen justify-center items-center"> <Spinner /> </div>
   
+  console.log("datos",data);
 
   return <ContactDetails contact={data} />;
 };

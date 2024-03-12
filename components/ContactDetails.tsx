@@ -4,34 +4,40 @@ import { CSVLink } from "react-csv";
 import Link from "next/link";
 import Participation from "@/components/Participation";
 
-interface ParticipationProps {
-    id: number;
-    contactId:number,
-    organizationId: number;
-    eventId: number;
-    registrationTime: Date;
-    timeParticipation: number;
-  }
+interface Event {
+  name:string,
+  internalID:number
+}
 
-  interface Organization{
-    id: number;
-    acronym: string;
-    fullName: string;
-    regionalName: string;
-    website: string;
-    country: string;
-  }
-  
-  interface Contact {
-    id: number;
-    name: string;
-    email: string;
-    organizationId: number;
-    projectParticipation: boolean;
-    isActive: boolean;
-    participation: Array<ParticipationProps>;
-    organization: Organization;
-  }
+interface ParticipationProps {
+  id: number;
+  contactId:number,
+  organizationId: number;
+  eventId: number;
+  registrationTime: Date;
+  timeParticipation: number;
+  event:Event
+}
+
+interface Organization{
+  id: number;
+  acronym: string;
+  fullName: string;
+  regionalName: string;
+  website: string;
+  country: string;
+}
+
+interface Contact {
+  id: number;
+  name: string;
+  email: string;
+  organizationId: number;
+  projectParticipation: boolean;
+  isActive: boolean;
+  participation: Array<ParticipationProps>;
+  organization: Organization;
+}
 
 interface Props {
   contact: Contact | undefined;
@@ -75,7 +81,7 @@ function ContactDetails(contact: Props) {
       <div>
         <Button><Link href="/">Volver
         </Link></Button>
-        <h1>Contacts</h1>
+        <h1>Participation in events</h1>
       </div>
       
       </div>
@@ -88,7 +94,7 @@ function ContactDetails(contact: Props) {
         </div> */}
       <div className="w-3/4">
             {contact.contact?.participation.map((participation) => (
-              <Participation key={participation.id} participation={participation} />
+              <Participation id={participation.id} key={participation.id} organization={contact.contact?.organization.fullName} registrationTime={participation.registrationTime} timeParticipation={participation.timeParticipation} event={participation.event.name} />
             ))}
       </div>
       </div>

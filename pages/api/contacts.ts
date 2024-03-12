@@ -20,7 +20,12 @@ export default async function handler(
           id: parseInt(id),
         },
         include: {
-          participation: true,
+          participation:{
+            include:{
+              event:true
+            }
+
+          },
           organization:true
         },
       });
