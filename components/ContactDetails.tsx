@@ -16,7 +16,7 @@ interface ParticipationProps {
   eventId: number;
   registrationTime: Date;
   timeParticipation: number;
-  event:Event
+  event:Event | undefined
 }
 
 interface Organization{
@@ -94,7 +94,7 @@ function ContactDetails(contact: Props) {
         </div> */}
       <div className="w-3/4">
             {contact.contact?.participation.map((participation) => (
-              <Participation id={participation.id} key={participation.id} organization={contact.contact?.organization.fullName} registrationTime={participation.registrationTime} timeParticipation={participation.timeParticipation} event={participation.event.name} />
+              <Participation id={participation.id} key={participation.id} organization={contact.contact?.organization.fullName} registrationTime={participation.registrationTime} timeParticipation={participation.timeParticipation} event={participation.event?.name} />
             ))}
       </div>
       </div>

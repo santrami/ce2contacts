@@ -4,7 +4,7 @@ import Link from "next/link";
 interface Participation {
     id: number;
     organization: string | undefined;
-    event: string;
+    event: string | undefined;
     registrationTime: Date;
     timeParticipation: number;
   }
