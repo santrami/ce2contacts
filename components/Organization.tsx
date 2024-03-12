@@ -56,6 +56,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { contact, organization } from "@prisma/client";
 import { useState } from 'react';
+import { useSession } from "next-auth/react";
 
 interface organizationProps {
   organization: Array<organization & { contact: contact }>;
@@ -66,6 +67,7 @@ interface organizationAloneProps {
 }
 
 const Organization = ({ organization }: organizationProps | organizationAloneProps) => {
+  
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // decide cuántas organizaciones quieres mostrar por página
 

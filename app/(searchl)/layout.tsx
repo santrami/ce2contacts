@@ -1,3 +1,5 @@
+"use client"
+import SigninButton from "@/components/SigninButton";
 import "../globals.css";
 import SearchInput from "../SearchInput";
 
@@ -9,6 +11,7 @@ export default function RootLayout({
   return (
 
         <div className="flex flex-col gap-10 items-center p-6">
+          <SigninButton />
           <SearchInput />
           <div>{children}</div>
         </div>
