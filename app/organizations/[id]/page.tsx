@@ -1,9 +1,8 @@
-"use client"
+"use client";
 import useSWR from "swr";
 import OrganizationDetails from "../../../components/OrganizationDetails";
 import Spinner from "@/app/search/Spinner";
-
-
+import SigninButton from "@/components/SigninButton";
 
 interface Contact {
   id: number;
@@ -34,25 +33,37 @@ const fetchOrganization = async (url: string) => {
   return response.json();
 };
 
-export default function Page({params}: {
-  params: {id:string}
-}) 
-{
-
+export default function Page({ params }: { params: { id: string } }) {
   const { data, error, isLoading } = useSWR<Organization>(
     `/api/organizations?id=${params.id}`,
     fetchOrganization,
-    { revalidateOnFocus: false, revalidateOnReconnect: false, shouldRetryOnError: false }
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      shouldRetryOnError: false,
+    }
   );
 
-  console.log("datos",data);
-  
+  console.log("datos", data);
 
   if (error) return <div>Error loading organization</div>;
-    
-  if (isLoading) return <div className="flex h-screen justify-center items-center"> <Spinner /> </div>
-  
 
-  return <OrganizationDetails organization={data} />;
-};
+  if (isLoading)
+    return (
+      <div className="flex h-screen justify-center items-center">
+        {" "}
+        <Spinner />{" "}
+      </div>
+    );
 
+  return (
+    <>
+      <div className="container">
+        <div className="flex flex-col justify-center items-center">
+          <SigninButton />
+        </div>
+      </div>
+      <OrganizationDetails organization={data} />
+    </>
+  );
+}
