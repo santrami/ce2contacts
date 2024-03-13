@@ -29,14 +29,23 @@ export const authOptions = {
 
         if (!matchPassword) throw new Error('Wrong password')
 
-        return {
-            name: userFound.username,
-            email: userFound.email,
-            role:userFound.role
-        }
+        return userFound
+        
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+        if (user) {
+            token.role = user.role;
+        }
+        return token;
+    },
+    async session({ session, token }) {
+        if (session?.user) session.user.role = token.role
+        return session
+    },
+},
   pages: {
     signIn: "/auth/login",
   }

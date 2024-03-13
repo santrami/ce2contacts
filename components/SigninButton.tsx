@@ -2,8 +2,12 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 
+
+
 function SigninButton() {
   const { data: session } = useSession();
+  console.log(session?.user.role);
+  
   if (session && session.user) {
     
     return (
