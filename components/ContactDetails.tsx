@@ -3,6 +3,7 @@ import Contact from "@/components/Contact";
 import { CSVLink } from "react-csv";
 import Link from "next/link";
 import Participation from "@/components/Participation";
+import { useRouter } from 'next/navigation'
 
 interface Event {
   name: string;
@@ -44,6 +45,7 @@ interface Props {
 }
 
 function ContactDetails(contact: Props) {
+  const router= useRouter();
   const headers = [
     "name",
     "email",
@@ -82,8 +84,8 @@ function ContactDetails(contact: Props) {
         </div>
         <div>
           <div>
-            <Button>
-              <Link href="/">Volver</Link>
+            <Button variant={"secondary"} onClick={()=> router.back()}>
+              back
             </Button>
             <h1>Participation in events</h1>
           </div>

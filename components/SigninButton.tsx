@@ -5,12 +5,11 @@ import Link from "next/link";
 function SigninButton() {
   const { data: session } = useSession();
   if (session && session.user) {
-    console.log(session.user);
     
     return (
-      <div className="flex gap-6 items-center">
+      <div className="flex gap-6 items-center bg-slate-800 w-full justify-end box-border">
         <div className="flex gap-3">
-          <p className="text-sky-600">{session.user.name}</p>
+          <p className="text-sky-600">Welcome {session.user.name}</p>
         </div>
         <Button onClick={() => signOut()} variant="destructive">
           Sign Out

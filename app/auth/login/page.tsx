@@ -2,6 +2,8 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 type FormValues = {
   email: string;
@@ -27,7 +29,7 @@ function LoginPage() {
     
 
     if (res?.error){
-      alert(res.error)
+      toast.error(res.error)
     }else{
       router.push('/')
     }
@@ -35,6 +37,7 @@ function LoginPage() {
 
   return (
     <div className="bg-slate-800 h-[calc(100vh)] flex justify-center items-center">
+      <ToastContainer/>
       <form className="w-1/4" onSubmit={handleSubmit(onSubmit)}>
         <h1>login</h1>
         <label htmlFor="email" className="text-slate-500 mb-2 block text-sm">

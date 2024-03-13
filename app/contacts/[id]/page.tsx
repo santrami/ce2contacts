@@ -4,14 +4,21 @@ import Spinner from "@/app/search/Spinner";
 import ContactDetails from "@/components/ContactDetails";
 import SigninButton from "@/components/SigninButton";
 
+interface Event {
+  name: string;
+  internalID: number;
+}
+
 interface ParticipationProps {
   id: number;
   contactId: number;
   organizationId: number;
   eventId: number;
-  registrationTime: Date;
+  registrationTime: string;
   timeParticipation: number;
+  event: Event | undefined;
 }
+
 interface Organization {
   id: number;
   acronym: string;

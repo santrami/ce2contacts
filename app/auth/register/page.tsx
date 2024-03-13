@@ -1,6 +1,8 @@
 "use client";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {useRouter} from 'next/navigation'
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 type FormValues = {
   username: string;
@@ -20,7 +22,7 @@ function RegisterPage() {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (data.password !== data.confirmPassword) {
-      return alert("passwords  do not match");
+      return toast.error("passwords do not match!");
     }
 
     const res = await fetch("/api/auth/register", {
@@ -43,6 +45,7 @@ function RegisterPage() {
   };
   return (
     <div className="bg-slate-800 h-[calc(100vh)] flex justify-center items-center">
+      <ToastContainer/>
       <form className="w-1/4" onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="username" className="text-slate-500 mb-2 block text-sm">
           Username:

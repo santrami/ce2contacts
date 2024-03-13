@@ -39,7 +39,7 @@ const Organization = ({ organization }: organizationProps | organizationAlonePro
           </Link>
           
           {/* <Contact contact={organization.contact}/> 
-          <div>{organization.contact.name}</div> *//*}/*
+          <div>{organization.contact.name}</div> */ /*}/*
 
 
         </div>
@@ -50,13 +50,11 @@ const Organization = ({ organization }: organizationProps | organizationAlonePro
 
 export default Organization;*/
 
-
-"use client"
+"use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { contact, organization } from "@prisma/client";
-import { useState } from 'react';
-import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 interface organizationProps {
   organization: Array<organization & { contact: contact }>;
@@ -66,10 +64,11 @@ interface organizationAloneProps {
   organization: Array<organization>;
 }
 
-const Organization = ({ organization }: organizationProps | organizationAloneProps) => {
-  
+const Organization = ({
+  organization,
+}: organizationProps | organizationAloneProps) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // decide cuántas organizaciones quieres mostrar por página
+  const itemsPerPage = 10;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -84,8 +83,11 @@ const Organization = ({ organization }: organizationProps | organizationAlonePro
   return (
     <>
       {currentItems.map((organization) => (
-        <div key={organization.id} className="flex justify-between p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600">
-          <div className="flex flex-col gap-2">
+        <div
+          key={organization.id}
+          className="lg:flex lg:justify-between p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-full"
+        >
+          <div className="flex flex-col gap-2 w-full">
             <span className="text-xl font-semibold">
               {organization.fullName}
             </span>
@@ -104,17 +106,20 @@ const Organization = ({ organization }: organizationProps | organizationAlonePro
             </span>
           </div>
           <Link href={`/organizations/${organization.id}`}>
-            <Button>Ver detalle</Button>
+            <Button variant={"secondary"}>Contacts</Button>
           </Link>
         </div>
       ))}
-      <div className="flex justify-center items-center gap-7 text-gray-400 p-7 text-2xl">
-        {[...Array(totalPages)].map((e, i) => 
-          <button className="hover:scale-150 transition-all focus:bg-gray-400 p-1 focus:text-slate-950 focus:rounded-full" key={i} onClick={() => handlePageChange(i + 1)}>
-            {i + 1}
-          </button>
-        )}
-      </div>
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-7 text-gray-400 p-7 text-2xl">
+          {[...Array(totalPages)].map((e, i) => (
+            <button className="hover:scale-150 transition-all focus:bg-gray-400 p-1 focus:text-slate-950 focus:rounded-full"
+              key={i} onClick={() => handlePageChange(i + 1)}>
+              {i + 1}
+            </button>
+          ))}
+        </div>
+      )}
     </>
   );
 };
