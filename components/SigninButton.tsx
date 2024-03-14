@@ -6,8 +6,8 @@ import Link from "next/link";
 
 function SigninButton() {
   const { data: session } = useSession();
-  console.log(session?.user.role);
-  
+  console.log(session?.user);
+
   if (session && session.user) {
     
     return (
@@ -15,6 +15,7 @@ function SigninButton() {
         <div className="flex gap-3">
           <p className="text-sky-600">Welcome {session.user.name}</p>
         </div>
+        
         <Button onClick={() => signOut()} variant="destructive">
           Sign Out
         </Button>

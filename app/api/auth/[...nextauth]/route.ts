@@ -28,7 +28,8 @@ export const authOptions = {
         const matchPassword = await bcrypt.compare(credentials!.password, userFound.password)
 
         if (!matchPassword) throw new Error('Wrong password')
-
+        console.log(userFound);
+        
         return userFound
         
       },
@@ -38,11 +39,15 @@ export const authOptions = {
     async jwt({ token, user }) {
         if (user) {
             token.role = user.role;
+            token.username= user.username
         }
         return token;
     },
     async session({ session, token }) {
-        if (session?.user) session.user.role = token.role
+        if (session?.user) {
+          session.user.role = token.role
+          session.user.name= token.username
+        }
         return session
     },
 },
