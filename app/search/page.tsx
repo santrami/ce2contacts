@@ -53,6 +53,7 @@ const SearchPage = () => {
           <span className="font-semibold">{searchQuery}</span>
         </span>
         <Organization organization={data.organization} />
+        <p>Contacts results for: {searchQuery}</p>
         <Contact contact={data.contact} />
       </>
     );

@@ -3,13 +3,13 @@ import nodemailer from 'nodemailer';
 
 // Create a transporter with SMTP credentials
 const transporter = nodemailer.createTransport({
-  host: 'mail.bsc.es',
-  port: 465, // Change port if needed
-  secure: true, // Change to true if your server requires a secure connection (SSL/TLS)
+  host: process.env.EMAIL_SERVER_HOST,
+  port: 465,
+  secure: true,
   auth: {
-    user: process.env.USER,
-    pass: process.env.PASS,
-  },
+    user: process.env.EMAIL_SERVER_USER,
+    pass: process.env.EMAIL_SERVER_PASSWORD,
+  }
 });
 
 // Define email options

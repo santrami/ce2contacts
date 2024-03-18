@@ -2,8 +2,11 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from '@/lib/prismadb'
 import bcrypt from 'bcrypt'
+import EmailProvider from "next-auth/providers/email";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import {User} from '@prisma/client'
 
-export const authOptions = {
+export const authOptions = { 
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -23,32 +26,42 @@ export const authOptions = {
 
         if (!userFound) throw new Error('No user found')
 
-        console.log(userFound)
 
         const matchPassword = await bcrypt.compare(credentials!.password, userFound.password)
 
         if (!matchPassword) throw new Error('Wrong password')
         console.log(userFound);
         
-        return userFound
+        const { password, ...userWithoutPass } = userFound;
+        return userWithoutPass;
         
       },
     }),
+    /* EmailProvider({
+      server: {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: process.env.EMAIL_SERVER_PORT,
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD
+        }
+      },
+      from: process.env.EMAIL_FROM
+    }), */
   ],
   callbacks: {
     async jwt({ token, user }) {
+      console.log("user",user);
+      console.log("token",token);
+      
         if (user) {
-            token.role = user.role;
-            token.username= user.username
+            token.user=user as UserActivation
         }
         return token;
     },
     async session({ session, token }) {
-        if (session?.user) {
-          session.user.role = token.role
-          session.user.name= token.username
-        }
-        return session
+      session.user = token.user;
+      return session;
     },
 },
   pages: {

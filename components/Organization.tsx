@@ -85,10 +85,10 @@ const Organization = ({
       {currentItems.map((organization) => (
         <div
           key={organization.id}
-          className="lg:flex lg:justify-between p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-full"
+          className="lg:flex lg:justify-between justify-center p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-full"
         >
-          <div className="flex flex-col gap-2 w-full">
-            <span className="text-xl font-semibold">
+          <div className="flex flex-col gap-2">
+            <span className="text-xl font-semibold content-center">
               {organization.fullName}
             </span>
             <a

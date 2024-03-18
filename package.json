@@ -2,7 +2,6 @@
   "name": "climateurope2",
   "version": "0.1.0",
   "private": true,
-
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -33,6 +32,7 @@
     "@prisma/client": "^5.11.0",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.14",
     "@types/react": "^18",
     "@types/react-csv": "^1.1.10",
     "@types/react-dom": "^18",

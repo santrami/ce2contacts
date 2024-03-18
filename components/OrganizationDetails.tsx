@@ -49,7 +49,7 @@ function OrganizationDetails(organization: Props) {
           key={organization.organization?.id}
           className="flex justify-between p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-3/4"
         >
-          <div className="flex flex-col gap-2 w-full items-center bg-gray-800 p-5">
+          <div className="flex flex-col gap-2 w-full items-center bg-gray-800 lg:p-5">
             <span className="text-xl font-semibold">
               {organization.organization?.fullName}
             </span>

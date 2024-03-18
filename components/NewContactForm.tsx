@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Select from 'react-select';
+import { Button } from './ui/button';
+import { useRouter } from 'next/navigation';
 
 interface FormValues {
     name: string;
@@ -27,6 +29,8 @@ const NewContactForm: React.FC<NewContactFormProps> = ({ organization, onCreateC
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [projectParticipation, setProjectParticipation] = useState(false);
+
+    const router= useRouter()
     
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
@@ -53,7 +57,7 @@ const NewContactForm: React.FC<NewContactFormProps> = ({ organization, onCreateC
     };
 
     return (
-        <div className="bg-slate-800 h-[calc(100vh)] flex justify-center items-center">
+        <div className="flex-col bg-slate-800 h-[calc(100vh)] flex justify-center items-center">
           <form className="w-fit p-6" onSubmit={handleSubmit(onSubmit)}>
             <label htmlFor="name" className="text-slate-500 mb-2 block text-sm">
               Complete Name:
@@ -119,6 +123,7 @@ const NewContactForm: React.FC<NewContactFormProps> = ({ organization, onCreateC
               Create Contact
             </button>
           </form>
+          <Button onClick={() => router.push("/")} variant={"secondary"}>back</Button>
         </div>
       );
 };
