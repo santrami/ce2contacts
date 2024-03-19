@@ -69,9 +69,7 @@ export default function Page({ params }: { params: { id: string } }) {
         <Spinner />{" "}
       </div>
     );
-
-  console.log("datos", data);
-
+    
   return (
     <>
       <div className="container">

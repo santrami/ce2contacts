@@ -12,7 +12,7 @@ function page() {
         unauthorized: You don't have permission to see this page. Contact
         administrator if you need to create a user
       </div>
-      <Button onClick={() => router.back()} variant={"secondary"}>back</Button>
+      <Button onClick={() => router.push("/")} variant={"secondary"}>back</Button>
     </div>
   );
 }

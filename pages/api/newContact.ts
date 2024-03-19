@@ -26,7 +26,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     isActive:true
                 }
             });
-            console.log('Contacto creado:', createdContact);
             res.status(201).json(createdContact);
         } catch (error) {
             console.error(error);

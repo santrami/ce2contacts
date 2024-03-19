@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import {useRouter} from 'next/navigation'
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { Button } from "@/components/ui/button";
 
 type FormValues = {
   username: string;
@@ -41,10 +42,9 @@ function RegisterPage() {
       router.push('/auth/login')
     }
 
-    console.log(errors)
   };
   return (
-    <div className="bg-slate-800 h-[calc(100vh)] flex justify-center items-center">
+    <div className="flex-col bg-slate-800 h-[calc(100vh)] flex justify-center items-center">
       <ToastContainer/>
       <form className="w-1/4" onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="username" className="text-slate-500 mb-2 block text-sm">
@@ -130,6 +130,7 @@ function RegisterPage() {
           Register
         </button>
       </form>
+      <Button className="mt-6" onClick={() => router.push("/")} variant={"secondary"}>back</Button>
     </div>
   );
 }

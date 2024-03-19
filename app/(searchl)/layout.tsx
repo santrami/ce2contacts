@@ -10,10 +10,10 @@ export default function RootLayout({
 }) {
   return (
 
-        <div className="flex flex-col gap-10 items-center p-6 pt-0">
+        <div className="flex flex-col gap-10 items-center pt-0">
           <SigninButton />
           <SearchInput />
-          <div>{children}</div>
+          <div className="lg:w-2/3 p-5">{children}</div>
         </div>
   );
 }

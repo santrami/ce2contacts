@@ -29,7 +29,6 @@ function LoginPage() {
       password: data.password,
       redirect: false,
     });
-    console.log(res);
 
     if (res?.error) {
       toast.error(res.error);

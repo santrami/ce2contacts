@@ -16,6 +16,7 @@ const Participation = (participation: Participation) => {
             {new Date(participation.registrationTime).toUTCString().split(" ").slice(0, 5).join(" ")}
           </span>
           <span className="text-xs font-semibold">
+            Time in event: {" "} 
             {participation.timeParticipation}
           </span>
         </div>

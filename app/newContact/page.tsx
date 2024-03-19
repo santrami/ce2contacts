@@ -37,7 +37,6 @@ const NewContactPage = () => {
       
       console.log("Nuevo contacto creado:", newContact);
       toast.success("Nuevo contacto creado:")
-      // Aquí puedes realizar cualquier acción adicional después de crear el contacto
     } catch (error:any) {
       console.error(error);
       setError(error.message)

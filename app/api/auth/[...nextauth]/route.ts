@@ -16,7 +16,6 @@ export const authOptions = {
       },
       // @ts-ignore
       async authorize(credentials) {
-        console.log(credentials)
 
         const userFound = await prisma.user.findUnique({
             where: {
@@ -30,7 +29,6 @@ export const authOptions = {
         const matchPassword = await bcrypt.compare(credentials!.password, userFound.password)
 
         if (!matchPassword) throw new Error('Wrong password')
-        console.log(userFound);
         
         const { password, ...userWithoutPass } = userFound;
         return userWithoutPass;
@@ -51,16 +49,15 @@ export const authOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      console.log("user",user);
-      console.log("token",token);
       
         if (user) {
-            token.user=user as UserActivation
+            token.user=user
         }
         return token;
     },
     async session({ session, token }) {
       session.user = token.user;
+      console.log(token);
       return session;
     },
 },
