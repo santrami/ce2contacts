@@ -1,6 +1,5 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
-import Link from "next/link";
 
 
 function SigninButton() {
@@ -21,7 +20,7 @@ function SigninButton() {
       </div>
     );
   }
-  return (
+  /* return (
     <>
       <Button
         onClick={async () =>
@@ -37,7 +36,7 @@ function SigninButton() {
         <Button>Register</Button>
       </Link>
     </>
-  );
+  ); */
 }
 
 export default SigninButton;

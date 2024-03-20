@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
+import Link from "next/link";
 
 type FormValues = {
   email: string;
@@ -21,7 +22,6 @@ function LoginPage() {
   const router = useRouter();
 
   const [resetPassword, setresetPassword] = useState<boolean>(false);
-  const [emailResetPassword, setemailResetPassword] = useState("")
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const res = await signIn("credentials", {
@@ -37,13 +37,9 @@ function LoginPage() {
     }
   };
 
-  const sendResetPassword = (e) => {
-    console.log(e);
-  };
-
   return (
     <div className="flex flex-col bg-slate-800 h-screen justify-center items-center">
-      {!resetPassword && (
+      
         <div className="flex">
           <ToastContainer />
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -96,37 +92,8 @@ function LoginPage() {
             </button>
           </form>
         </div>
-      )}
-      {resetPassword && (
-        <div>
-          <label htmlFor="email" className="text-slate-500 mb-2 block text-sm">
-            email:
-          </label>
-          <input
-            type="text"   
-            
-            {...register("email", {
-              
-              required: {
-                value: true,
-                message: "email required",
-              },
-            })}
-            className="p-3 rounded block mb-2 bg-slate-900 text-slate-300 w-full"
-            placeholder="user"
-            onChange={(e) => setemailResetPassword(e.target.value)}
-
-          />
-          {errors.email && (
-            <span className="text-red-500">{errors.email.message}</span>
-          )}
-          <button className="w-full bg-blue-500 text-white p-3 rounded-lg" onClick={(e)=>{sendResetPassword(emailResetPassword)}}>
-            Reset my password
-          </button>
-        </div>
-      )}
-      <div className="cursor-pointer hover:underline" onClick={() => setresetPassword(!resetPassword)}>
-        {resetPassword ? <p className="text-green-400 text-sm mt-4">login</p> : <p className="text-green-400 text-sm mt-4">Forgot your password?</p>  }
+      <div className="cursor-pointer hover:underline">
+         <Link href="/reset-password" className="text-green-400 text-sm mt-4">Forgot your password?</Link>
       </div>
     </div>
   );

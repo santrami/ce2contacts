@@ -1,9 +1,7 @@
 //this endpoint allows to create new contact in DDBB 
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prismadb from '@/lib/prismadb';
 
 interface ContactData {
     id: number;
@@ -18,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'POST') {
         const newContactData: ContactData = req.body;
         try {
-            const createdContact = await prisma.contact.create({
+            const createdContact = await prismadb.contact.create({
                 data: {
                     ...newContactData,
                     //organizationId was being sent as string, force to number

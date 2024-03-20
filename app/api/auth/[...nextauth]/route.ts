@@ -1,12 +1,14 @@
-import NextAuth from "next-auth";
+import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import prisma from '@/lib/prismadb'
+import prismadb from '@/lib/prismadb'
 import bcrypt from 'bcrypt'
 import EmailProvider from "next-auth/providers/email";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import {User} from '@prisma/client'
+import { SessionStrategy } from "next-auth";
 
 export const authOptions = { 
+  //adapter: PrismaAdapter(prismadb),
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -17,20 +19,21 @@ export const authOptions = {
       // @ts-ignore
       async authorize(credentials) {
 
-        const userFound = await prisma.user.findUnique({
+        const userFound = await prismadb.user.findUnique({
             where: {
                 email: credentials!.email
             }
         })
 
         if (!userFound) throw new Error('No user found')
-
-
+        
         const matchPassword = await bcrypt.compare(credentials!.password, userFound.password)
 
         if (!matchPassword) throw new Error('Wrong password')
         
         const { password, ...userWithoutPass } = userFound;
+        console.log(userWithoutPass);
+        
         return userWithoutPass;
         
       },
@@ -47,12 +50,21 @@ export const authOptions = {
       from: process.env.EMAIL_FROM
     }), */
   ],
+  adapter: PrismaAdapter(prismadb),
+  /* session: {
+    strategy: 'jwt',
+  }, */
+  session: {
+    strategy: "jwt" as SessionStrategy,
+},
   callbacks: {
     async jwt({ token, user }) {
+      console.log(user, token);
       
-        if (user) {
-            token.user=user
-        }
+      if (user) {
+        token.user=user as User
+      }
+      console.log(user);
         return token;
     },
     async session({ session, token }) {
