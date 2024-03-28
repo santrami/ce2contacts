@@ -33,6 +33,9 @@ const Contact: React.FC<ContactProps> = ({ contact }) => {
             <span className="text-xs font-semibold">
               {contact.projectParticipation}
             </span>
+            <span className="text-xs font-semibold">
+              recordar poner la institución
+            </span>
           </div>
             <Link href={`/contacts/${contact.id}`}>
               <Button variant={"secondary"}>See Activity</Button>

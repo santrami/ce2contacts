@@ -5,6 +5,8 @@ import useSWR from "swr";
 import Spinner from "./Spinner";
 import Organization from "../../components/Organization";
 import Contact from "../../components/Contact";
+import { Building, UserRound } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 const fetchOrganization = async (url: string) => {
   const response = await fetch(url);
@@ -19,18 +21,24 @@ const fetchOrganization = async (url: string) => {
 //data for csv
 
 const SearchPage = () => {
+  const {data:session} = useSession()
   const search = useSearchParams();
   const searchQuery = search ? search.get("q") : null;
   const router = useRouter();
+  console.log("sesssionnn",session);
+  
 
   const encodedSearchQuery = encodeURI(searchQuery || "");
+  const userId = session!.user.id;
+  
 
   const { data, isLoading } = useSWR(
-    `/api/search?q=${encodedSearchQuery}`,
+    `/api/search?q=${encodedSearchQuery}&userId=${userId}`,
     fetchOrganization,
     { revalidateOnFocus: false }
   );
-
+    console.log("a ver ome",data);
+    
   if (!encodedSearchQuery) {
     router.push("/");
   }
@@ -42,18 +50,17 @@ const SearchPage = () => {
   if (!data.organization && !data.contact) {
     return null;
   }
-  console.log(data);
 
   if (data.organization.length !== 0 || data.contact.length !== 0 ) {
     
     return (
       <>
         <span className="text-xl">
-          Showing results for:{" "}
+        <Building className="inline-block" /> Showing results for:{" "}
           <span className="font-semibold">{searchQuery}</span>
         </span>
         <Organization organization={data.organization} />
-        <p>Contacts results for: {searchQuery}</p>
+        <p> <UserRound className="inline-block" /> Contacts results for: {searchQuery}</p>
         <Contact contact={data.contact} />
       </>
     );

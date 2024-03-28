@@ -1,4 +1,4 @@
-import { organization, contact } from "@prisma/client";
+import { Organization, Contact, User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prismadb";
 
@@ -8,16 +8,34 @@ export default async function handler(
 ) {
   if (req.method === "GET") {
     try {
-      const { q: query } = req.query;
+      const { q: query, userId } = req.query;
 
       if (typeof query !== "string") {
         throw new Error("Invalid request");
       }
+      console.log("soy query", query);
+      
+      /*save query per user*/
+
+      const user= await prisma.user.findUnique({
+        where: {
+          id: Number(userId)
+        }
+      })
+
+      await prisma.searchQuery.create({
+        data: {
+          query:query,
+          userId: Number(userId)
+        },
+      });
+      //console.log(user?.email);
 
       /**
        * Search organization
        */
-      const organization: Array<organization> =
+      
+      const organization =
         await prisma.organization.findMany({
           where: {
             OR: [
@@ -44,7 +62,7 @@ export default async function handler(
             ],
           },
         });
-
+        
       /**
        * Save search
        */
@@ -54,7 +72,7 @@ export default async function handler(
         },
       }); */
 
-      const contact: Array<contact> =
+      const contact: Array<Contact> =
         await prisma.contact.findMany({
           where: {
             OR: [
@@ -75,7 +93,8 @@ export default async function handler(
           },
         });
 
-
+        console.log("soy organization", organization);
+        console.log("soy contact", contact);
 
       /**
        * Save search
@@ -87,7 +106,9 @@ export default async function handler(
       }); */
       res.status(200).json({ organization, contact });
 
-    } catch (error: any) {
+    } catch (error) {
+      console.error(error);
+      
       res.status(500).end();
     }
   }

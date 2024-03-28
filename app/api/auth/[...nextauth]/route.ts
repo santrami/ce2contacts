@@ -2,7 +2,6 @@ import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import prismadb from '@/lib/prismadb'
 import bcrypt from 'bcrypt'
-import EmailProvider from "next-auth/providers/email";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import {User} from '@prisma/client'
 import { SessionStrategy } from "next-auth";
@@ -32,23 +31,12 @@ export const authOptions = {
         if (!matchPassword) throw new Error('Wrong password')
         
         const { password, ...userWithoutPass } = userFound;
-        console.log(userWithoutPass);
+        //console.log(userWithoutPass);
         
         return userWithoutPass;
         
       },
     }),
-    /* EmailProvider({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: process.env.EMAIL_SERVER_PORT,
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD
-        }
-      },
-      from: process.env.EMAIL_FROM
-    }), */
   ],
   adapter: PrismaAdapter(prismadb),
   /* session: {
@@ -56,20 +44,21 @@ export const authOptions = {
   }, */
   session: {
     strategy: "jwt" as SessionStrategy,
+    maxAge: 60*60*24
 },
   callbacks: {
     async jwt({ token, user }) {
-      console.log(user, token);
+      //console.log(user, token);
       
       if (user) {
         token.user=user as User
       }
-      console.log(user);
+      console.log(token);
         return token;
     },
     async session({ session, token }) {
       session.user = token.user;
-      console.log(token);
+      //console.log(token);
       return session;
     },
 },

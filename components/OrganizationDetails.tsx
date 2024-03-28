@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import Contact from "./Contact";
 import { CSVLink } from "react-csv";
 import Link from "next/link";
+import { FileX2 } from "lucide-react";
 
 interface Contacts {
   id: number;
@@ -45,6 +46,14 @@ function OrganizationDetails(organization: Props) {
   return (
     <>
       <div className="flex flex-col gap-10 items-center p-6">
+      <div>
+          <div>
+            <Button variant={"secondary"}>
+              <Link href="/">back to organizations</Link>
+            </Button>
+            
+          </div>
+        </div>
         <div
           key={organization.organization?.id}
           className="flex justify-between p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-3/4"
@@ -68,14 +77,7 @@ function OrganizationDetails(organization: Props) {
             </span>
           </div>
         </div>
-        <div>
-          <div>
-            <Button variant={"secondary"}>
-              <Link href="/">back to organizations</Link>
-            </Button>
-            <h1 className="pt-5 flex justify-center items-center self-center">Contacts</h1>
-          </div>
-        </div>
+        
         <div className="">
           <Button variant={"outline"}>
             <CSVLink
@@ -84,10 +86,11 @@ function OrganizationDetails(organization: Props) {
               headers={headers}
               filename={`contacts from ${organization.organization?.acronym}`}
             >
-              Download csv
+              <FileX2 className="inline-block"/> Download contacts 
             </CSVLink>
           </Button>
         </div>
+        <h1 className="pt-5 flex justify-center items-center self-center">Contacts</h1>
         <div className="flex flex-col items-center lg:w-full">
           {organization.organization?.contact.map((contact) => (
             <Contact key={contact.id} contact={contact} />

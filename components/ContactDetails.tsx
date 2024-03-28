@@ -85,7 +85,7 @@ function ContactDetails(contact: Props) {
         <div>
           <div className="flex flex-col justify-center items-center">
             <Button className="" variant={"secondary"} onClick={()=> router.back()}>
-              back
+              back to results
             </Button>
             <h1 className="mt-4">Participation in events</h1>
           </div>

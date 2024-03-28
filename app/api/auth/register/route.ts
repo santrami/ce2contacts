@@ -48,7 +48,8 @@ export async function POST (request:NextRequest){
 
     const {password: _, ...user} = newUser
 
-    return NextResponse.json(user)
+    return NextResponse.json({"message": "user created"})
+    
     } catch (error:any) {
         return NextResponse.json({
             message: error.message

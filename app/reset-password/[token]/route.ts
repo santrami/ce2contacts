@@ -60,5 +60,3 @@ export const GET = async (request: NextRequest) => {
 function generateSecurePassword() {
   return randomBytes(12).toString('hex'); // Generates a random hex string of length 24
 }
-
-// Note: Do not use 'export default get;' since we are using named exports.
