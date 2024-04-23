@@ -1,5 +1,6 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 
 function SigninButton() {
@@ -11,7 +12,8 @@ function SigninButton() {
     return (
       <div className="flex gap-6 items-center bg-slate-800 w-full justify-end box-border">
         <div className="flex gap-3">
-          <p className="text-sky-600">Welcome {session.user.username}</p>
+          <p className="text-sky-600">Welcome</p>
+          <Link href={`/profile/${session.user.id}`}><span className="hover:underline">{session.user.username}</span></Link>
         </div>
         
         <Button onClick={() => signOut()} variant="destructive">

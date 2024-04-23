@@ -15,13 +15,13 @@ interface ContactData {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
         const newContactData: ContactData = req.body;
+        console.log(newContactData)
         try {
             const createdContact = await prismadb.contact.create({
                 data: {
                     ...newContactData,
                     //organizationId was being sent as string, force to number
                     organizationId: Number (newContactData.organizationId),
-                    isActive:true
                 }
             });
             res.status(201).json(createdContact);

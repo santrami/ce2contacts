@@ -13,7 +13,7 @@ export default function RootLayout({
         <div className="flex flex-col gap-10 items-center pt-0">
           <SigninButton />
           <SearchInput />
-          <div className="lg:w-2/3 p-5">{children}</div>
+          <div className="lg:w-2/3 w-full p-5">{children}</div>
         </div>
   );
 }

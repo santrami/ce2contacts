@@ -80,6 +80,7 @@ function ContactDetails(contact: Props) {
             <span className="text-xs font-semibold">
               {contact.contact?.organization.fullName}
             </span>
+              {contact.contact?.sector?.name}
           </div>
         </div>
         <div>
@@ -87,7 +88,7 @@ function ContactDetails(contact: Props) {
             <Button className="" variant={"secondary"} onClick={()=> router.back()}>
               back to results
             </Button>
-            <h1 className="mt-4">Participation in events</h1>
+            <h1 className="mt-4">Participation in events:</h1>
           </div>
         </div>
         {/* <div className="">

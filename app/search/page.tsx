@@ -25,8 +25,10 @@ const SearchPage = () => {
   const search = useSearchParams();
   const searchQuery = search ? search.get("q") : null;
   const router = useRouter();
-  console.log("sesssionnn",session);
   
+  if(!session || !session.user){
+    return null
+  }
 
   const encodedSearchQuery = encodeURI(searchQuery || "");
   const userId = session!.user.id;

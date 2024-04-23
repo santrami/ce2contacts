@@ -42,7 +42,8 @@ export async function POST (request:NextRequest){
             username: data.username,
             email: data.email,
             password: hashPassword,
-            role:"user"
+            role:"admin",
+            contactId:2941
         }
     })
 

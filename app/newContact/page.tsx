@@ -32,7 +32,7 @@ const NewContactPage = () => {
       if (!response.ok) {
         const errorData = await response.json(); // Obtén los datos de error del servidor
         console.log(errorData);
-        throw new Error(errorData.error.meta.target); // Lanza un error con el mensaje del servidor
+        /* throw new Error(errorData.error.meta.target); */ // Lanza un error con el mensaje del servidor
       }
       
       console.log("Nuevo contacto creado:", newContact);

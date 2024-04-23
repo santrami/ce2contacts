@@ -26,7 +26,8 @@ export default async function handler(
             }
 
           },
-          organization:true
+          organization:true,
+          sector:true,
         },
       });
 

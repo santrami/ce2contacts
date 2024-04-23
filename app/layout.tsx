@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-zinc-900 text-zinc-200">
+      <body suppressHydrationWarning={true} className="bg-zinc-900 text-zinc-200">
         <Providers>{children}</Providers>
       </body>
     </html>

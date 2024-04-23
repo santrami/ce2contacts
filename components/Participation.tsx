@@ -9,16 +9,16 @@ interface Participation {
 const Participation = (participation: Participation) => {
   return (
     <div className="p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600">
-        <div className="flex flex-col gap-2 items-center">
+        <div className="flex flex-col gap-2 items-center text-center">
           <span className="text-xl font-semibold">{participation.event}</span>
-          {participation.organization}
-          <span className="text-xs font-semibold">
+          {/*{participation.organization}
+           <span className="text-xs font-semibold">
             {new Date(participation.registrationTime).toUTCString().split(" ").slice(0, 5).join(" ")}
           </span>
           <span className="text-xs font-semibold">
             Time in event: {" "} 
             {participation.timeParticipation}
-          </span>
+          </span> */}
         </div>
       </div>
   )

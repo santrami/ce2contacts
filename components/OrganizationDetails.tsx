@@ -84,7 +84,7 @@ function OrganizationDetails(organization: Props) {
               className="text-gray-800"
               data={csvdata}
               headers={headers}
-              filename={`contacts from ${organization.organization?.acronym}`}
+              filename={`contacts from ${organization.organization?.fullName}`}
             >
               <FileX2 className="inline-block"/> Download contacts 
             </CSVLink>

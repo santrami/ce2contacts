@@ -34,7 +34,7 @@ const Contact: React.FC<ContactProps> = ({ contact }) => {
               {contact.projectParticipation}
             </span>
             <span className="text-xs font-semibold">
-              recordar poner la institución
+              {contact.organization.fullName}
             </span>
           </div>
             <Link href={`/contacts/${contact.id}`}>

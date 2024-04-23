@@ -1,74 +1,41 @@
-/*import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { contact, organization } from "@prisma/client";
-
-interface organizationProps {
-  organization: Array<organization & { contact: contact }>;
-}
-
-interface organizationAloneProps {
-  organization: Array<organization>;
-}
-
-const Organization = ({ organization }: organizationProps | organizationAloneProps) => {
-  
-  return (
-    <>
-      {organization.map((organization) => (
-        <div key={organization.id} className="flex justify-between p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600">
-          <div className="flex flex-col gap-2">
-            <span className="text-xl font-semibold">
-              {organization.fullName}
-            </span>
-            <a
-              href={organization.website}
-              target="_blank"
-              className="text-xs font-semibold"
-            >
-              {organization.website}
-            </a>
-            <span className="text-xs font-semibold">
-              {organization.acronym}
-            </span>
-            <span className="text-xs font-semibold">
-              {organization.country}
-            </span>
-          </div>
-          <Link href={`/organizations/${organization.id}`}>
-            <Button>Ver detalle</Button>
-          </Link>
-          
-          {/* <Contact contact={organization.contact}/> 
-          <div>{organization.contact.name}</div> */ /*}/*
-
-
-        </div>
-      ))}
-    </>
-  );
-};
-
-export default Organization;*/
-
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { contact, organization } from "@prisma/client";
-import { useState } from "react";
+import { Contact, Organization as OrganizationTable } from "@prisma/client";
+import { useEffect, useState } from "react";
 
 interface organizationProps {
-  organization: Array<organization & { contact: contact }>;
+  organization: Array<OrganizationTable & { contact: Contact }>;
 }
 
 interface organizationAloneProps {
-  organization: Array<organization>;
+  organization: Array<OrganizationTable>;
 }
 
 const Organization = ({
   organization,
 }: organizationProps | organizationAloneProps) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [isMobile, setIsMobile] = useState(false);
+  const itemsPerPage = 15;
+
+  // Detect whether it is mobile or not
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    // Call the function once to detect the initial window size
+    handleResize();
+
+    // Subscribe for the resize event
+    window.addEventListener('resize', handleResize);
+
+    // Unsubscribe from the event when the component unmounts
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -78,6 +45,14 @@ const Organization = ({
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+  };
+
+  const handleNext = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const handlePrevious = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
 
   return (
@@ -92,7 +67,7 @@ const Organization = ({
               {organization.fullName}
             </span>
             <a
-              href={organization.website}
+              href={organization.website || undefined}
               target="_blank"
               className="text-xs font-semibold"
             >
@@ -111,14 +86,35 @@ const Organization = ({
         </div>
       ))}
       {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-7 text-gray-400 p-7 text-2xl">
-          {[...Array(totalPages)].map((e, i) => (
-            <button className="hover:scale-150 transition-all focus:bg-gray-400 p-1 focus:text-slate-950 focus:rounded-full"
-              key={i} onClick={() => handlePageChange(i + 1)}>
-              {i + 1}
-            </button>
-          ))}
-        </div>
+        <>
+          {isMobile ? (
+            <div className="flex justify-center items-center gap-7 text-gray-400 p-7 text-2xl">
+              <Button variant="outline" className="text-black" onClick={() => setCurrentPage(1)} disabled={currentPage === 1} >
+                first
+              </Button>
+              <Button variant="outline" className="text-black" onClick={handlePrevious} disabled={currentPage === 1} >
+                Previous
+              </Button>
+              <Button variant="outline" className="text-black" onClick={handleNext} disabled={currentPage === totalPages} >
+                Next
+              </Button>
+              <Button variant="outline" className="text-black" onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} >
+                Last
+              </Button>
+            </div>
+          ) : (
+            <div className="flex flex-wrap justify-center items-center gap-2 text-gray-400 p-7 text-2xl">
+              {[...Array(totalPages)].map((e, i) => (
+                <button className="hover:scale-150 transition-all focus:bg-gray-400 p-1 focus:text-slate-950 focus:rounded-full"
+                  key={i}
+                  onClick={() => handlePageChange(i + 1)}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </>
   );
