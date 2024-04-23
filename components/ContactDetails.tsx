@@ -29,6 +29,11 @@ interface Organization {
   country: string;
 }
 
+interface Sector {
+  id: number;
+  name: string;
+}
+
 interface Contact {
   id: number;
   name: string;
@@ -37,6 +42,7 @@ interface Contact {
   projectParticipation: boolean;
   isActive: boolean;
   participation: Array<ParticipationProps>;
+  sector:Sector;
   organization: Organization;
 }
 

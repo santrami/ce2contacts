@@ -1,6 +1,10 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+interface Organization {
+  fullName:string
+}
+
 interface ContactProps {
   contact:
     | {
@@ -9,6 +13,7 @@ interface ContactProps {
         email: string;
         organizationId: number;
         projectParticipation: boolean;
+        organization: Organization;
         isActive: boolean;
       }
     | Array<{
@@ -17,6 +22,7 @@ interface ContactProps {
         email: string;
         organizationId: number;
         projectParticipation: boolean;
+        organization: Organization;
         isActive: boolean;
       }>;
 }

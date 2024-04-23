@@ -1,6 +1,6 @@
 /* this endpoint allows to fetch organizations, it's used in newcontact form for select organization for new contact*/
 
-import { organization} from "@prisma/client";
+import { Organization} from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prismadb";
 
@@ -10,7 +10,7 @@ export default async function handler(
 ) {
   if (req.method === "GET") {
     try {
-      const organization: Array<organization> =
+      const organization: Array<Organization> =
         await prisma.organization.findMany();
       
       res.status(200).json({ organization });
