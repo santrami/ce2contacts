@@ -25,6 +25,5 @@ export default withAuth(
 )
 
 export const config = { matcher: [
-    '/((?!auth/login|reset-password|api/reset-password|auth/register|_next/static).*)',
+    '/((?!auth/login|reset-password|api/reset-password|_next/static).*)',
 ] }
-

@@ -29,7 +29,7 @@ const ForgotPasswordForm = () => {
         },
         body: JSON.stringify(data),
       });
-      const responsedata= await response.json()
+      console.log(response)
       
       if (!response.ok) {
         throw new Error('There was an error sending the reset password email.');
