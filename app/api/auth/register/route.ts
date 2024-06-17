@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt'
 export async function POST (request:NextRequest){
     try {
         const data = await request.json()
-    //console.log(data);
+    console.log(data);
     
     const emailFound = await prismadb.user.findUnique({
         where: {

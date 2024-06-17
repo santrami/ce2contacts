@@ -2,8 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useState, useEffect } from 'react'
-
+import { useState, useEffect } from 'react';
+import { SearchQuery } from "@prisma/client";
 
 import React from 'react'
 

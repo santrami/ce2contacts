@@ -30,6 +30,7 @@ model Contact {
   email                String          @unique(map: "email") @db.VarChar(255)
   organizationId       Int?
   organization         Organization?   @relation(fields: [organizationId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contact_ibfk_1")
+  country              String?          
   projectParticipation Boolean
   termsId              Int?
   acceptedTerms        Terms?           @relation(fields: [termsId], references: [id])
