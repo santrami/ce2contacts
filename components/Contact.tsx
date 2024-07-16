@@ -43,9 +43,14 @@ const Contact: React.FC<ContactProps> = ({ contact }) => {
               {contact.organization.fullName}
             </span>
           </div>
+            <div className="flex gap-2">
             <Link href={`/contacts/${contact.id}`}>
               <Button variant={"secondary"}>See Activity</Button>
             </Link>
+            <Link href={`/contacts/${contact.id}`}>
+              <Button variant={"secondary"}>Edit Contact</Button>
+            </Link>
+            </div>
         </div>
         ))}
       </>

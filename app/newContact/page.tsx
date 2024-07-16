@@ -33,10 +33,12 @@ const NewContactPage = () => {
         const errorData = await response.json(); // Obtén los datos de error del servidor
         console.log(errorData);
         /* throw new Error(errorData.error.meta.target); */ // Lanza un error con el mensaje del servidor
+      } else{
+        console.log("New contact created", newContact);
+        toast.success("New contact created")
       }
       
-      console.log("Nuevo contacto creado:", newContact);
-      toast.success("Nuevo contacto creado:")
+      
     } catch (error:any) {
       console.error(error);
       setError(error.message)

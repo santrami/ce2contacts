@@ -16,15 +16,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'POST') {
         const newContactData: ContactData = req.body;
         console.log(newContactData)
+        newContactData.organizationId = Number(newContactData.organizationId);
         try {
             const createdContact = await prismadb.contact.create({
                 data: {
                     ...newContactData,
                     //organizationId was being sent as string, force to number
+                    projectParticipation: true,
                     sectorId: 1,
-                    termsId:1,
-                    organizationId:null,
-                    /* organizationId:55, */
+                    termsId: 1,
                     /* organizationId: Number (newContactData?.organizationId), */
                 }
             });
