@@ -24,8 +24,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     //organizationId was being sent as string, force to number
                     projectParticipation: true,
                     sectorId: 1,
-                    termsId: 1,
-                    /* organizationId: Number (newContactData?.organizationId), */
+                    termsId: null,
+                    organizationId: Number (newContactData?.organizationId),
                 }
             });
             res.status(201).json(createdContact);

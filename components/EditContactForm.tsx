@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import Select from 'react-select';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
+import React from 'react';
 
 interface FormValues {
     name: string;
@@ -10,7 +11,7 @@ interface FormValues {
     organizationId: number;
   }
 
-  type NewContactFormProps = {
+  type EditContactFormProps = {
     organization: { 
       id: number; 
       acronym: string; 
@@ -19,10 +20,10 @@ interface FormValues {
       website: string; 
       country: string | null; 
     }[];
-    onCreateContact: (newContact: FormValues) => Promise<void>;
+    onEditContact: (editContact: FormValues) => Promise<void>;
   };
 
-const NewContactForm: React.FC<NewContactFormProps> = ({ organization, onCreateContact }) => {
+const EditContactForm: React.FC<EditContactFormProps> = ({ organization, onEditContact }) => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -37,14 +38,14 @@ const NewContactForm: React.FC<NewContactFormProps> = ({ organization, onCreateC
         // Validar los datos del formulario
 
         // Crear el nuevo contacto
-        const newContact: FormValues = {
+        const editContact: FormValues = {
             name:data.name,
             email:data.email,
             organizationId: Number(data.organizationId),
         };
 
         // Llamar a la función de callback para pasar el nuevo contacto al componente padre
-        onCreateContact(newContact);
+        onEditContact(editContact);
 
         // Limpiar el formulario después de crear el contacto
         setName('');
@@ -124,4 +125,4 @@ const NewContactForm: React.FC<NewContactFormProps> = ({ organization, onCreateC
       );
 };
 
-export default NewContactForm;
+export default EditContactForm;
