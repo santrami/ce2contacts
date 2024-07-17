@@ -11,7 +11,6 @@ export default function RootLayout({
   return (
    
         <div className="flex flex-col gap-10 items-center w-full">
-          <SigninButton />
           <SearchInput />
           <div className="flex flex-col items-center w-2/3">{children}</div>
         </div>

@@ -13,7 +13,6 @@ export default function RootLayout({
   return (
 
         <div className="flex flex-col gap-10 items-center pt-0">
-          <SigninButton />
           <div>
             <Button variant={"secondary"}>
               <Link href="/newContact">Create contact</Link>

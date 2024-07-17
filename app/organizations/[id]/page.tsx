@@ -58,11 +58,6 @@ export default function Page({ params }: { params: { id: string } }) {
 
   return (
     <>
-      <div className="container">
-        <div className="flex flex-col justify-center items-center">
-          <SigninButton />
-        </div>
-      </div>
       <OrganizationDetails organization={data} />
     </>
   );
