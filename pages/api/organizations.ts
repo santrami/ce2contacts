@@ -15,7 +15,7 @@ export default async function handler(
 
   if (req.method === "GET") {
     try {
-      const organization = await prisma.Organization.findUniqueOrThrow({
+      const organization = await prisma.organization.findUniqueOrThrow({
         where: {
           id: parseInt(id),
         },

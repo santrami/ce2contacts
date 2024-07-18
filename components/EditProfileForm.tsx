@@ -10,7 +10,7 @@ interface FormValues {
   organizationId: number | string;
 }
 
-type NewContactFormProps = {
+type EditProfileFormProps = {
   organization: {
     id: number;
     acronym: string;
@@ -19,12 +19,12 @@ type NewContactFormProps = {
     website: string;
     country: string | null;
   }[];
-  onCreateContact: (newContact: FormValues) => Promise<void>;
+  onEditProfile: (editProfile: FormValues) => Promise<void>;
 };
 
-const NewContactForm: React.FC<NewContactFormProps> = ({
+const EditProfileForm: React.FC<EditProfileFormProps> = ({
   organization,
-  onCreateContact,
+  onEditProfile,
 }) => {
   const {
     register,
@@ -40,14 +40,14 @@ const NewContactForm: React.FC<NewContactFormProps> = ({
   const onSubmit: SubmitHandler<FormValues> = (data) => {    
 
     // Crear el nuevo contacto
-    const newContact: FormValues = {
+    const editProfile: FormValues = {
       name: data.name,
       email: data.email,
       organizationId: Number(data.organizationId),
     };
 
     // Llamar a la función de callback para pasar el nuevo contacto al componente padre
-    onCreateContact(newContact);
+    onEditProfile(editProfile);
 
     // Limpiar el formulario después de crear el contacto
     setName("");
@@ -168,4 +168,4 @@ const NewContactForm: React.FC<NewContactFormProps> = ({
   );
 };
 
-export default NewContactForm;
+export default EditProfileForm;

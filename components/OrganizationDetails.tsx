@@ -11,6 +11,7 @@ interface Contacts {
   organizationId: number;
   projectParticipation: boolean;
   isActive: boolean;
+  organization: Organization
 }
 
 interface Organization {

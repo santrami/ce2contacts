@@ -1,8 +1,7 @@
 "use client";
 import useSWR from "swr";
-import Spinner from "@/app/search/Spinner";
+import Spinner from "@/components/Spinner";
 import ContactDetails from "@/components/ContactDetails";
-import SigninButton from "@/components/SigninButton";
 
 interface Event {
   name: string;
@@ -28,6 +27,11 @@ interface Organization {
   country: string;
 }
 
+interface Sector {
+  id: number;
+  name: string;
+}
+
 interface Contact {
   id: number;
   name: string;
@@ -35,6 +39,7 @@ interface Contact {
   organizationId: number;
   projectParticipation: boolean;
   isActive: boolean;
+  sector:Sector;
   participation: Array<ParticipationProps>;
   organization: Organization;
 }

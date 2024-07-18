@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
-import Spinner from "./Spinner";
+import Spinner from "../../components/Spinner";
 import Organization from "../../components/Organization";
 import Contact from "../../components/Contact";
 import { Building, UserRound } from "lucide-react";
@@ -26,21 +26,21 @@ const SearchPage = () => {
   const searchQuery = search ? search.get("q") : null;
   const router = useRouter();
   
-  if(!session || !session.user){
-    return null
-  }
-
+  
   const encodedSearchQuery = encodeURI(searchQuery || "");
   const userId = session!.user.id;
   
-
+  
   const { data, isLoading } = useSWR(
     `/api/search?q=${encodedSearchQuery}&userId=${userId}`,
     fetchOrganization,
     { revalidateOnFocus: false }
   );
-    console.log("a ver ome",data);
-    
+  
+  if(!session || !session.user){
+    return null
+  }
+  
   if (!encodedSearchQuery) {
     router.push("/");
   }
