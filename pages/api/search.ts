@@ -1,6 +1,17 @@
-import { Organization, Contact, User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prismadb";
+
+type Contact = {
+  id: number;
+  name: string;
+  email: string;
+  organizationId: number | null;
+  country: string | null;
+  projectParticipation: boolean;
+  termsId: number | null;
+  sectorId: number | null;
+  userId: number | null;
+}
 
 export default async function handler(
   req: NextApiRequest,

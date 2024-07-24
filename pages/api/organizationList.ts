@@ -1,8 +1,16 @@
 /* this endpoint allows to fetch organizations, it's used in newcontact form for select organization for new contact*/
 
-import { Organization} from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prismadb";
+
+type Organization = {
+  id: number;
+  acronym: string | null;
+  fullName: string;
+  regionalName: string | null;
+  website: string | null;
+  country: string | null;
+}
 
 export default async function handler(
   req: NextApiRequest,

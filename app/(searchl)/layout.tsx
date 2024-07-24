@@ -1,5 +1,4 @@
 "use client";
-import SigninButton from "@/components/SigninButton";
 import "../globals.css";
 import SearchInput from "../SearchInput";
 import { Button } from "@/components/ui/button";

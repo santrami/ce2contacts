@@ -1,77 +1,57 @@
 import { useState } from "react";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import Select from "react-select";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 
 interface FormValues {
-  name: string;
+  username: string;
   email: string;
-  organizationId: number | string;
+  password:string;
 }
 
-type EditProfileFormProps = {
-  organization: {
-    id: number;
-    acronym: string;
-    fullName: string;
-    regionalName: string | null;
-    website: string;
-    country: string | null;
-  }[];
-  onEditProfile: (editProfile: FormValues) => Promise<void>;
-};
-
-const EditProfileForm: React.FC<EditProfileFormProps> = ({
-  organization,
-  onEditProfile,
-}) => {
+const EditProfileForm = ({ onEditProfile }) => {
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors },
   } = useForm<FormValues>();
-  const [name, setName] = useState("");
+  const [username, setuserName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const router = useRouter();
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {    
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    console.log(data);
 
-    // Crear el nuevo contacto
+    // Modificar usuario
     const editProfile: FormValues = {
-      name: data.name,
+      username: data.username,
       email: data.email,
-      organizationId: Number(data.organizationId),
+      password: data.password
     };
 
     // Llamar a la función de callback para pasar el nuevo contacto al componente padre
     onEditProfile(editProfile);
 
     // Limpiar el formulario después de crear el contacto
-    setName("");
+    setuserName("");
     setEmail("");
+    setPassword("");
   };
 
-  const organizationOptions = organization.map((org) => ({
-    value: org.id,
-    label: org.fullName
-  }));
-  
-
   return (
-    <div className="flex flex-col bg-zinc-900 h-screen justify-center items-center gap-10">
+    <div className="flex flex-col bg-zinc-900 justify-center items-center gap-10">
       <form
         className="flex flex-col w-fit max-w-lg p-6 gap-5"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <label htmlFor="name" className="text-slate-500 mb-2 block text-sm">
-          Complete Name:
+        <label htmlFor="username" className="text-slate-500 mb-2 block text-sm">
+          Edit username:
         </label>
         <input
           type="text"
-          {...register("name", {
+          {...register("username", {
             required: {
               value: true,
               message: "Name required",
@@ -80,8 +60,8 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
           className="p-3 rounded block mb-2 bg-slate-300 text-slate-900 w-full"
           placeholder="Name"
         />
-        {errors.name && (
-          <span className="text-red-500">{errors.name.message}</span>
+        {errors.username && (
+          <span className="text-red-500">{errors.username.message}</span>
         )}
 
         <label htmlFor="email" className="text-slate-500 mb-2 block text-sm">
@@ -102,63 +82,26 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
           <span className="text-red-500">{errors.email.message}</span>
         )}
 
-        {/* <label className="text-slate-500 mb-2 block text-sm">
-              is ClimateEurope2 Participant?
-            </label>
-            <input
-              type="checkbox"
-              {...register("projectParticipation")}
-              className="p-3 rounded-lg block w-10 h-10 mb-2 accent-red-300  w-full"
-            /> */}
-
-        <label
-          htmlFor="organizationId"
-          className="text-slate-500 mb-2 block text-sm"
-        >
-          Organization:
+        <label htmlFor="password" className="text-slate-500 mb-2 block text-sm">
+          new Password:
         </label>
-        {/* <select
-          {...register("organizationId", {
+        <input
+          type="text"
+          {...register("password", {
             required: {
               value: true,
-              message: "Organization required",
+              message: "password required",
             },
           })}
           className="p-3 rounded block mb-2 bg-slate-300 text-slate-900 w-full"
-        >
-          <option value="">Select an organization</option>
-          {organization.map((org) => (
-            <option key={org.id} value={org.id}>
-              {org.fullName}
-            </option>
-          ))}
-        </select> */}
-
-        <Controller
-          name="organizationId"
-          control={control}
-          rules={{ required: "Organization required" }}
-          render={({ field: {value, onBlur, onChange, ref} }) => (
-            <Select
-              ref={ref}
-              options={organizationOptions}
-              value={organizationOptions.find((c) => c.value === value) ?? ""}
-              // @ts-ignore
-              onChange={(e) => onChange(e?.value)}
-              onBlur={onBlur}
-              className="text-slate-900 focus:bg-slate-300 focus:text-slate-900"
-              placeholder="Select an organization"
-              classNamePrefix="react-select"
-              
-            />
-          )}
+          placeholder="new Password"
         />
-        {errors.organizationId && (
-          <span className="text-red-500">{errors.organizationId.message}</span>
+        {errors.email && (
+          <span className="text-red-500">{errors.email.message}</span>
         )}
 
         <button className="w-full bg-blue-500 text-white p-3 rounded-lg">
-          Create Contact
+          Edit Profile
         </button>
       </form>
       <Button onClick={() => router.push("/")} variant={"secondary"}>

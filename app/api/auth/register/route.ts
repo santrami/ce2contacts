@@ -43,7 +43,7 @@ export async function POST (request:NextRequest){
             email: data.email,
             password: hashPassword,
             role:"admin",
-            contactId:2941
+            contactId:2962
         }
     })
 

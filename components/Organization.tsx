@@ -1,16 +1,37 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Contact, Organization as OrganizationTable } from "@prisma/client";
 import { useEffect, useState } from "react";
 
-interface organizationProps {
-  organization: Array<OrganizationTable & { contact: Contact }>;
+type Contact = {
+  id: number;
+  name: string;
+  email: string;
+  organizationId: number | null;
+  country: string | null;
+  projectParticipation: boolean;
+  termsId: number | null;
+  sectorId: number | null;
+  userId: number | null;
+}
+
+type OrganizationTable = {
+  id: number;
+  acronym: string | null;
+  fullName: string;
+  regionalName: string | null;
+  website: string | null;
+  country: string | null;
 }
 
 interface organizationAloneProps {
   organization: Array<OrganizationTable>;
 }
+
+interface organizationProps {
+  organization: Array<OrganizationTable & { contact: Contact }>;
+}
+
 
 const Organization = ({
   organization,
@@ -18,6 +39,8 @@ const Organization = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const itemsPerPage = 15;
+  console.log(organization);
+  
 
   // Detect whether it is mobile or not
   useEffect(() => {

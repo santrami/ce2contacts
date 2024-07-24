@@ -5,6 +5,10 @@
 /.pnp
 .pnp.js
 .yarn/install-state.gz
+contacts-app.tar
+docker-compose2.yml
+Dockerfile2
+
 
 # testing
 /coverage

@@ -2,46 +2,28 @@
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { SearchQuery } from "@prisma/client";
+import { useState} from "react";
 import EditProfileForm from "@/components/EditProfileForm";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/ReactToastify.min.css";
 
-interface ContactData {
+interface UserData {
   name: string;
   email: string;
-  organizationId: number;
-  projectParticipation: string;
-  isActive: boolean;
 }
 
 function Page() {
   const { data: session } = useSession();
   const [error, setError] = useState(null);
-  const [orgs, setOrgs] = useState<
-    {
-      id: number;
-      acronym: string;
-      fullName: string;
-      regionalName: string | null;
-      website: string;
-      country: string | null;
-    }[]
-  >([]);
 
-  useEffect(() => {
-    organizations();
-  }, []);
-
-  const handleCreateContact = async (newContact: ContactData) => {
+  const handleCreateContact = async (updateUser: UserData) => {
     try {
-      const response = await fetch("/api/newContact", {
+      const response = await fetch(`/api/user/${session?.user.id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newContact),
+        body: JSON.stringify(updateUser),
       });
 
       if (!response.ok) {
@@ -49,24 +31,17 @@ function Page() {
         console.log(errorData);
         throw new Error(errorData.error.meta.target); // Lanza un error con el mensaje del servidor
       } else {
-        console.log("New contact created", newContact);
-        toast.success("New contact created");
+        console.log("New contact created", updateUser);
+        toast.success("User updated successfully");
       }
     } catch (error: any) {
-      console.error(error);
+      console.log(error);
       setError(error.message);
-      toast.error(`${error.message} already exists`);
+      toast.error(`${error.message} already exists, try another one`);
     }
   };
 
-  const organizations = async () => {
-    const orgs = await fetch("/api/organizationList");
-    const res = await orgs.json();
-
-    setOrgs(res.organization);
-  };
-
-  /* const [data, setData] = useState(null);
+/*   const [data, setData] = useState(null);
     useEffect(() => {
       const fetchData = async () => {
           const response = await fetch('/api/queries');
@@ -94,7 +69,6 @@ function Page() {
           <div className="flex">
             <ToastContainer />
             <EditProfileForm
-              organization={orgs}
               onEditProfile={handleCreateContact}
             />
           </div>

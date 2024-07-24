@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: contacts
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    networks:
+      - contacts
+#    env_file:
+#      - .env
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  db:
+    image: mysql:8.0
+    container_name: db
+    restart: always
+#    env_file:
+#      - .env    
+    environment:
+    - MYSQL_ROOT_PASSWORD=santiago
+    - MYSQL_DATABASE=ce2
+    - MYSQL_USER=sramirez
+    - MYSQL_PASSWORD=santiago
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - contacts
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--silent"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+volumes:
+  mysql-data:
+
+networks:
+  contacts:
+    driver: bridge

@@ -2,8 +2,18 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import prismadb from '@/lib/prismadb'
 import bcrypt from 'bcrypt'
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import {User} from '@prisma/client'
 import { SessionStrategy } from "next-auth";
+
+type User = {
+    id: number;
+    username: string;
+    email: string;
+    password: string;
+    role: string;
+    emailResetPassword: string | null;
+    passwordResetTokenExpires: Date | null;
+    contactId: number;
+}
 
 export const authOptions = { 
   //adapter: PrismaAdapter(prismadb),
