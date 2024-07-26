@@ -4,9 +4,9 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
-      const users = await prisma.user.findMany();
+      const contacts = await prisma.contact.findMany();
 
-      return NextResponse.json(users);
+      return NextResponse.json(contacts);
     } catch (error) {
         return NextResponse.json({
             error: error.message,

@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
-import NewContactForm from "@/components/NewContactForm";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/ReactToastify.min.css";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import EditContactForm from "@/components/EditContactForm";
+import { ToastContainer, toast } from "react-toastify";
+import { useParams } from "next/navigation";
 import "react-toastify/ReactToastify.min.css";
 
 interface ContactData {
@@ -16,7 +16,7 @@ interface ContactData {
   isActive: boolean;
 }
 
-const NewContactPage = () => {
+function page() {
   const { data: session } = useSession();
   const [error, setError] = useState(null);
   const [orgs, setOrgs] = useState<
@@ -30,18 +30,26 @@ const NewContactPage = () => {
     }[]
   >([]);
 
+  const params = useParams();
+
   useEffect(() => {
     organizations();
   }, []);
+  const organizations = async () => {
+    const orgs = await fetch("/api/organizationList");
+    const res = await orgs.json();
 
-  const handleCreateContact = async (newContact: ContactData) => {
+    setOrgs(res.organization);
+  };
+
+  const handleEditContact = async (editContact: ContactData) => {
     try {
-      const response = await fetch("/api/newContact", {
+      const response = await fetch(`/api/contact/${params!.id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newContact),
+        body: JSON.stringify(editContact),
       });
 
       if (!response.ok) {
@@ -49,36 +57,31 @@ const NewContactPage = () => {
         console.log(errorData);
         throw new Error(errorData.error.meta.target); // Lanza un error con el mensaje del servidor
       } else {
-        console.log("New contact created", newContact);
-        toast.success("New contact created");
+        toast.success("User updated successfully");
       }
     } catch (error: any) {
-      console.error(error);
+      console.log(error);
       setError(error.message);
-      toast.error(`${error.message} already exists`);
+      toast.error(`${error.message} already exists, try another one`);
     }
   };
 
-  const organizations = async () => {
-    const orgs = await fetch("/api/organizationList");
-    const res = await orgs.json();
-
-    setOrgs(res.organization);
-  };
   if (session && session.user) {
     return (
-      <div>
-        <ToastContainer />
-        <NewContactForm
-          organization={orgs}
-          onCreateContact={handleCreateContact}
-        />
-        <Link href={"/"}>
-          <Button variant={"mystyle"}>Back</Button>
-        </Link>
-      </div>
+      <>
+        <div className="">
+          <ToastContainer />
+          <EditContactForm
+            organization={orgs}
+            onEditContact={handleEditContact}
+          />
+          <Link href={"/"}>
+            <Button variant={"mystyle"}>Back</Button>
+          </Link>
+        </div>
+      </>
     );
   }
-};
+}
 
-export default NewContactPage;
+export default page;

@@ -2,21 +2,32 @@
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useState} from "react";
+import { useEffect, useState } from "react";
 import EditProfileForm from "@/components/EditProfileForm";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/ReactToastify.min.css";
+import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 
 interface UserData {
   name: string;
   email: string;
 }
 
+type queries = {
+  query: string;
+  id: string;
+};
+
 function Page() {
   const { data: session } = useSession();
   const [error, setError] = useState(null);
+  const [data, setData] = useState<queries[]>([]);
+  const [visible, setVisible] = useState(false);
+  const router = useRouter();
+  const params = useParams();
 
-  const handleCreateContact = async (updateUser: UserData) => {
+  const handleEditProfile = async (updateUser: UserData) => {
     try {
       const response = await fetch(`/api/user/${session?.user.id}`, {
         method: "POST",
@@ -41,38 +52,53 @@ function Page() {
     }
   };
 
-/*   const [data, setData] = useState(null);
-    useEffect(() => {
-      const fetchData = async () => {
-          const response = await fetch('/api/queries');
-          const data = await response.json();
-          setData(data);
-      };
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(`/api/queries/${params?.id}`);
+      const data = await response.json();
+      setData(data);
+      console.log(data);
+    };
 
-      fetchData();
-  }, []); */
+    fetchData();
+  }, []);
 
   if (session && session.user) {
     console.log(session.user);
 
     return (
       <>
-        <div className="grid grid-rows-2">
+        <div className="grid">
+          <ToastContainer />
           <div className="flex flex-col justify-center items-center gap-3">
             <p className="text-2xl">{session.user.username}</p>
             <p>{session.user.email}</p>
             <p>{session.user.role}</p>
-            <Link href={"/"}>
-              <Button variant={"mystyle"}>Back</Button>
-            </Link>
+
+            <Button onClick={() => setVisible(!visible)} variant={"mystyle"}>
+              Edit Profile
+            </Button>
           </div>
-          <div className="flex">
-            <ToastContainer />
-            <EditProfileForm
-              onEditProfile={handleCreateContact}
-            />
-          </div>
+          {visible && (
+            <div className={`${visible ? 'opacity-100' : 'opacity-0'}`}>
+              <EditProfileForm onEditProfile={handleEditProfile} />
+            </div>
+          )}
         </div>
+        <h2 className="flex flex-col flex-wrap text-4xl">my queries</h2>
+        <div className="flex flex-wrap gap-3">
+          {data.map((query) => {
+            return (
+              <div key={query.id} className="flex flex-col gap-3">
+                <p>{query.query}</p>
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex items-end justify-center">
+        <Button  onClick={() => router.push("/")} variant={"secondary"}>
+          back
+        </Button></div>
       </>
     );
   }

@@ -47,7 +47,7 @@ const Contact: React.FC<ContactProps> = ({ contact }) => {
             <Link href={`/contacts/${contact.id}`}>
               <Button variant={"secondary"}>See Activity</Button>
             </Link>
-            <Link href={`/contacts/${contact.id}`}>
+            <Link href={`/editContact/${contact.id}`}>
               <Button variant={"secondary"}>Edit Contact</Button>
             </Link>
             </div>

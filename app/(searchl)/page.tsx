@@ -2,19 +2,6 @@
 import Organization from "../../components/Organization";
 import { useEffect, useState } from "react";
 
-/* type OrganizationTable = {
-  id: number;
-  acronym: string | null;
-  fullName: string;
-  regionalName: string | null;
-  website: string | null;
-  country: string | null;
-}
-
-interface organizationAloneProps {
-  organization: Array<OrganizationTable>;
-}
- */
 export default function Home() {
 
   const [orgs, setOrgs] = useState<
@@ -42,9 +29,7 @@ export default function Home() {
     console.log(organization);
     
   };
-  /* const organization = await prismadb.organization.findMany();
- */
-  // return <Institutes organization={organization} />;
+
   return (
     <div>
       <Organization organization={orgs} />

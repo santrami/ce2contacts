@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
 
 interface FormValues {
   username: string;
@@ -19,7 +17,6 @@ const EditProfileForm = ({ onEditProfile }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const router = useRouter();
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log(data);
@@ -104,9 +101,6 @@ const EditProfileForm = ({ onEditProfile }) => {
           Edit Profile
         </button>
       </form>
-      <Button onClick={() => router.push("/")} variant={"secondary"}>
-        back
-      </Button>
     </div>
   );
 };
