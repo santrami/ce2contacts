@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import EditProfileForm from "@/components/EditProfileForm";
 import { ToastContainer, toast } from "react-toastify";
