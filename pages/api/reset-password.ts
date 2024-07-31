@@ -31,7 +31,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 await sendPasswordResetEmail(newContactData.email, passwordResetToken);
             }
             res.status(200).json(user);
-            //res.status(200).json({"message": "enviado!!!"});
         } catch (error) {
             res.status(401).json(error)
         }

@@ -15,7 +15,6 @@ interface ContactData {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
         const newContactData: ContactData = req.body;
-        console.log(newContactData)
         try {
             const createdContact = await prismadb.contact.create({
                 data: {

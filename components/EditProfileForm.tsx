@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useParams } from "next/navigation";
 
 interface FormValues {
   username: string;
@@ -8,19 +9,39 @@ interface FormValues {
 }
 
 const EditProfileForm = ({ onEditProfile }) => {
+  const params = useParams();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>();
+    reset
+  } = useForm<FormValues>({
+    defaultValues: {
+      username: "",
+      email: "",
+      password:""
+    } // <-- Forma de inicializar los valores del formulario con los valores por default
+  });
+
+  useEffect(() => {
+    const profile = async () => {
+      const response = await fetch(`/api/user/${params!.id}`);
+      const data = await response.json();
+      const {password, ...user } = data;
+      reset(user)
+    };
+    profile();
+  }, [reset]);
+
+
+  
+
   const [username, setuserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
-
     // Modificar usuario
     const editProfile: FormValues = {
       username: data.username,
@@ -30,11 +51,6 @@ const EditProfileForm = ({ onEditProfile }) => {
 
     // Llamar a la función de callback para pasar el nuevo contacto al componente padre
     onEditProfile(editProfile);
-
-    // Limpiar el formulario después de crear el contacto
-    setuserName("");
-    setEmail("");
-    setPassword("");
   };
 
   return (

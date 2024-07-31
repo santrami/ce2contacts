@@ -56,15 +56,12 @@ function Page() {
       const response = await fetch(`/api/queries/${params?.id}`);
       const data = await response.json();
       setData(data);
-      console.log(data);
     };
 
     fetchData();
   }, []);
 
   if (session && session.user) {
-    console.log(session.user);
-
     return (
       <>
         <div className="grid">
@@ -79,7 +76,7 @@ function Page() {
             </Button>
           </div>
           {visible && (
-            <div className={`${visible ? 'opacity-100' : 'opacity-0'}`}>
+            <div className={`${visible ? "opacity-100" : "opacity-0"}`}>
               <EditProfileForm onEditProfile={handleEditProfile} />
             </div>
           )}
@@ -95,9 +92,10 @@ function Page() {
           })}
         </div>
         <div className="flex items-end justify-center">
-        <Button  onClick={() => router.push("/")} variant={"secondary"}>
-          back
-        </Button></div>
+          <Button onClick={() => router.push("/")} variant={"secondary"}>
+            back
+          </Button>
+        </div>
       </>
     );
   }

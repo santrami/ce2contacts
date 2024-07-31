@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Select from "react-select";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 
 interface FormValues {
   name: string;
@@ -31,11 +32,30 @@ const EditContactForm: React.FC<EditContactFormProps> = ({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>();
+    reset
+  } = useForm<FormValues>({
+    defaultValues: {
+      name: "",
+      email: "",
+      organizationId: "",
+    },
+  });
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
+  const params = useParams();
+
   const router = useRouter();
+
+  useEffect(() => {
+    const contact = async () => {
+      const response = await fetch(`/api/contact/${params!.id}`);
+      const data = await response.json();
+      const {password, ...contact } = data;
+      reset(contact)
+    };
+    contact();
+  }, [reset]);
 
   const organizationOptions = organization.map((org) => ({
     value: org.id,

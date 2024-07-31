@@ -16,6 +16,10 @@ export default function RootLayout({
         <Button variant={"secondary"}>
           <Link href="/newContact">Create contact</Link>
         </Button>
+        <Button variant={"secondary"}>
+          <Link href="/newOrganization">Create organization</Link>
+        </Button>
+        
       </div>
       <Suspense>
         <SearchInput />

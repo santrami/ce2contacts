@@ -28,7 +28,7 @@ const SearchPage = () => {
   
   
   const encodedSearchQuery = encodeURI(searchQuery || "");
-  const userId = session!.user.id;
+  const userId = session?.user.id;
   
   
   const { data, isLoading } = useSWR(

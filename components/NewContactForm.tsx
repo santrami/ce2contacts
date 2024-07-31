@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 interface FormValues {
   name: string;
   email: string;
+  country:string;
   organizationId: number | string;
 }
 
@@ -34,6 +35,7 @@ const NewContactForm: React.FC<NewContactFormProps> = ({
   } = useForm<FormValues>();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [country, setCountry] = useState("");
 
   const router = useRouter();
 
@@ -43,6 +45,7 @@ const NewContactForm: React.FC<NewContactFormProps> = ({
     const newContact: FormValues = {
       name: data.name,
       email: data.email,
+      country: data.country,
       organizationId: Number(data.organizationId),
     };
 
@@ -102,14 +105,23 @@ const NewContactForm: React.FC<NewContactFormProps> = ({
           <span className="text-red-500">{errors.email.message}</span>
         )}
 
-        {/* <label className="text-slate-500 mb-2 block text-sm">
-              is ClimateEurope2 Participant?
-            </label>
-            <input
-              type="checkbox"
-              {...register("projectParticipation")}
-              className="p-3 rounded-lg block w-10 h-10 mb-2 accent-red-300  w-full"
-            /> */}
+<label htmlFor="country" className="text-slate-500 mb-2 block text-sm">
+          country:
+        </label>
+        <input
+          type="text"
+          {...register("country", {
+            required: {
+              value: true,
+              message: "country required",
+            },
+          })}
+          className="p-3 rounded block mb-2 bg-slate-900 text-slate-300 w-full"
+          placeholder="country"
+        />
+        {errors.country && (
+          <span className="text-red-500">{errors.country.message}</span>
+        )}
 
         <label
           htmlFor="organizationId"
@@ -117,23 +129,7 @@ const NewContactForm: React.FC<NewContactFormProps> = ({
         >
           Organization:
         </label>
-        {/* <select
-          {...register("organizationId", {
-            required: {
-              value: true,
-              message: "Organization required",
-            },
-          })}
-          className="p-3 rounded block mb-2 bg-slate-300 text-slate-900 w-full"
-        >
-          <option value="">Select an organization</option>
-          {organization.map((org) => (
-            <option key={org.id} value={org.id}>
-              {org.fullName}
-            </option>
-          ))}
-        </select> */}
-
+        
         <Controller
           name="organizationId"
           control={control}

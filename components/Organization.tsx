@@ -13,7 +13,7 @@ type Contact = {
   termsId: number | null;
   sectorId: number | null;
   userId: number | null;
-}
+};
 
 type OrganizationTable = {
   id: number;
@@ -22,7 +22,7 @@ type OrganizationTable = {
   regionalName: string | null;
   website: string | null;
   country: string | null;
-}
+};
 
 interface organizationAloneProps {
   organization: Array<OrganizationTable>;
@@ -32,15 +32,12 @@ interface organizationProps {
   organization: Array<OrganizationTable & { contact: Contact }>;
 }
 
-
 const Organization = ({
   organization,
 }: organizationProps | organizationAloneProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const itemsPerPage = 15;
-  console.log(organization);
-  
 
   // Detect whether it is mobile or not
   useEffect(() => {
@@ -52,11 +49,11 @@ const Organization = ({
     handleResize();
 
     // Subscribe for the resize event
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     // Unsubscribe from the event when the component unmounts
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -103,32 +100,58 @@ const Organization = ({
               {organization.country}
             </span>
           </div>
-          <Link href={`/organizations/${organization.id}`}>
-            <Button variant={"secondary"}>Contacts</Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link href={`/organizations/${organization.id}`}>
+              <Button variant={"secondary"}>Contacts</Button>
+            </Link>
+            <Link href={`/editOrganization/${organization.id}`}>
+              <Button variant={"secondary"}>Edit Organization</Button>
+            </Link>
+          </div>
         </div>
       ))}
       {totalPages > 1 && (
         <>
           {isMobile ? (
             <div className="flex justify-center items-center gap-7 text-gray-400 p-7 text-2xl">
-              <Button variant="outline" className="text-black" onClick={() => setCurrentPage(1)} disabled={currentPage === 1} >
+              <Button
+                variant="outline"
+                className="text-black"
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+              >
                 first
               </Button>
-              <Button variant="outline" className="text-black" onClick={handlePrevious} disabled={currentPage === 1} >
+              <Button
+                variant="outline"
+                className="text-black"
+                onClick={handlePrevious}
+                disabled={currentPage === 1}
+              >
                 Previous
               </Button>
-              <Button variant="outline" className="text-black" onClick={handleNext} disabled={currentPage === totalPages} >
+              <Button
+                variant="outline"
+                className="text-black"
+                onClick={handleNext}
+                disabled={currentPage === totalPages}
+              >
                 Next
               </Button>
-              <Button variant="outline" className="text-black" onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} >
+              <Button
+                variant="outline"
+                className="text-black"
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages}
+              >
                 Last
               </Button>
             </div>
           ) : (
             <div className="flex flex-wrap justify-center items-center gap-2 text-gray-400 p-7 text-2xl">
               {[...Array(totalPages)].map((e, i) => (
-                <button className="hover:scale-150 transition-all focus:bg-gray-400 p-1 focus:text-slate-950 focus:rounded-full"
+                <button
+                  className="hover:scale-150 transition-all focus:bg-gray-400 p-1 focus:text-slate-950 focus:rounded-full"
                   key={i}
                   onClick={() => handlePageChange(i + 1)}
                 >

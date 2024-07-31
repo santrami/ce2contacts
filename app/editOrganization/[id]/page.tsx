@@ -3,53 +3,45 @@ import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import EditContactForm from "@/components/EditContactForm";
 import { ToastContainer, toast } from "react-toastify";
 import { useParams } from "next/navigation";
 import "react-toastify/ReactToastify.min.css";
+import EditOrganizationForm from "@/components/EditOrganizationForm";
 
-interface ContactData {
-  name: string;
-  email: string;
-  organizationId: number;
-  projectParticipation: string;
-  isActive: boolean;
+interface OrganizationData {
+  acronym: string;
+  fullName: string;
+  regionalName: string;
+  website: string;
+  country: string;
 }
 
 function Page() {
   const { data: session } = useSession();
   const [error, setError] = useState(null);
-  const [orgs, setOrgs] = useState<
-    {
-      id: number;
-      acronym: string;
-      fullName: string;
-      regionalName: string | null;
-      website: string;
-      country: string | null;
-    }[]
-  >([]);
+  const [organization, setOrganization] = useState<OrganizationData>();
 
   const params = useParams();
 
   useEffect(() => {
-    organizations();
+    const organization = async () => {
+      const response = await fetch(`/api/organization/${params!.id}`);
+      const data = await response.json();
+      const { id, ...org } = data;
+
+      setOrganization(org);
+    };
+    organization();
   }, []);
-  const organizations = async () => {
-    const orgs = await fetch("/api/organizationList");
-    const res = await orgs.json();
 
-    setOrgs(res.organization);
-  };
-
-  const handleEditContact = async (editContact: ContactData) => {
+  const handleEditOrganization = async (editOrganization: OrganizationData) => {
     try {
-      const response = await fetch(`/api/contact/${params!.id}`, {
+      const response = await fetch(`/api/organization/${params!.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(editContact),
+        body: JSON.stringify(editOrganization),
       });
 
       if (!response.ok) {
@@ -57,7 +49,7 @@ function Page() {
         console.log(errorData);
         throw new Error(errorData.error.meta.target); // Lanza un error con el mensaje del servidor
       } else {
-        toast.success("Contact updated successfully");
+        toast.success("organization updated successfully");
       }
     } catch (error: any) {
       console.log(error);
@@ -71,9 +63,9 @@ function Page() {
       <>
         <div className="">
           <ToastContainer />
-          <EditContactForm
-            organization={orgs}
-            onEditContact={handleEditContact}
+          <EditOrganizationForm
+            organization={organization}
+            onEditOrganization={handleEditOrganization}
           />
           <Link href={"/"}>
             <Button variant={"mystyle"}>Back</Button>
