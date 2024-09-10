@@ -11,8 +11,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-10 items-center pt-0">
-      <div>
+    <div className="flex flex-col gap-10 items-center pt-0 mt-3">
+      <div className="flex gap-5">
         <Button variant={"secondary"}>
           <Link href="/newContact">Create contact</Link>
         </Button>
@@ -24,7 +24,7 @@ export default function RootLayout({
       <Suspense>
         <SearchInput />
       </Suspense>
-      <div className="lg:w-2/3 w-full p-5">{children}</div>
+      <div className=" lg:w-2/3 w-full p-5">{children}</div>
     </div>
   );
 }

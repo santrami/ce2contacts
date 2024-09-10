@@ -66,7 +66,6 @@ function ContactDetails(contact: Props) {
     contact.contact?.acronym,
     c.projectParticipation,
   ]); */
-  console.log("datos de contacto y participacion", contact);
 
   return (
     <>

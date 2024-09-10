@@ -24,15 +24,15 @@ const SearchInput = () => {
   };
 
   return (
-    <form onSubmit={onSearch} className="flex justify-center w-2/3">
+    <form onSubmit={onSearch} className="flex mt-4 justify-center w-2/3">
       <div className="relative inline-block w-screen">
         <input
           value={searchQuery || ""}
           onChange={(event) => setSearchQuery(event.target.value)}
-          className="px-5 py-1 sm:px-5 sm:py-3 flex-1 text-zinc-200 bg-zinc-800 focus:bg-black rounded-full focus:outline-none focus:ring-[1px]  placeholder:text-zinc-400 w-full"
+          className="px-5 py-1 sm:px-5 sm:py-3 flex-1 text-zinc-800 bg-slate-100 rounded-full focus:outline-none focus:ring-[1px]  placeholder:text-zinc-400 w-full"
           placeholder="Search institutions or contacts"
         />
-        {searchQuery !== "" && <X onClick={()=> {setSearchQuery(""); router.push("/")} } style={{ position: "absolute", right: 10, top:10, cursor:"pointer", display:"inline-block" }} />}
+        {searchQuery !== "" && <X color="black" onClick={()=> {setSearchQuery(""); router.push("/")} } style={{ position: "absolute", right: 10, top:10, cursor:"pointer", display:"inline-block" }} />}
       </div>
         <Button variant={"secondary"} onClick={onSearch} className="ml-2">search</Button>
     </form>

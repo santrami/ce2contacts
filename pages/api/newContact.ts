@@ -19,10 +19,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const createdContact = await prismadb.contact.create({
                 data: {
                     ...newContactData,
-                    //organizationId was being sent as string, force to number
-                    projectParticipation: true,
+                    projectParticipation: false,
                     sectorId: 1,
                     termsId: null,
+                    //organizationId was being sent as string, force to number
                     organizationId: Number (newContactData?.organizationId),
                 }
             });

@@ -69,7 +69,7 @@ const NewContactForm: React.FC<NewOrganizationFormProps> = ({ onCreateOrganizati
   }, []);
 
   return (
-    <div className="flex flex-col bg-zinc-900 h-screen justify-center items-center gap-10">
+    <div className="flex flex-col h-screen justify-center items-center gap-10">
       <form
         className="flex flex-col w-fit max-w-lg p-6 gap-5"
         onSubmit={handleSubmit(onSubmit)}
@@ -82,7 +82,7 @@ const NewContactForm: React.FC<NewOrganizationFormProps> = ({ onCreateOrganizati
           type="text"
           {...register("acronym")}
           className="p-3 rounded block mb-2 bg-slate-300 text-slate-900 w-full"
-          placeholder="Name"
+          placeholder="Acronym"
         />
         {errors.acronym && (
           <span className="text-red-500">{errors.acronym.message}</span>
@@ -100,7 +100,7 @@ const NewContactForm: React.FC<NewOrganizationFormProps> = ({ onCreateOrganizati
             },
           })}
           className="p-3 rounded block mb-2 bg-slate-300 text-slate-900 w-full"
-          placeholder="Name"
+          placeholder="Full Name"
         />
         {errors.fullName && (
           <span className="text-red-500">{errors.fullName.message}</span>
@@ -113,7 +113,7 @@ const NewContactForm: React.FC<NewOrganizationFormProps> = ({ onCreateOrganizati
           type="text"
           {...register("regionalName")}
           className="p-3 rounded block mb-2 bg-slate-300 text-slate-900 w-full"
-          placeholder="Name"
+          placeholder="Regional Name"
         />
         {errors.regionalName && (
           <span className="text-red-500">{errors.regionalName.message}</span>
@@ -126,7 +126,7 @@ const NewContactForm: React.FC<NewOrganizationFormProps> = ({ onCreateOrganizati
           type="text"
           {...register("website")}
           className="p-3 rounded block mb-2 bg-slate-300 text-slate-900 w-full"
-          placeholder="Name"
+          placeholder="Website"
         />
         {errors.website && (
           <span className="text-red-500">{errors.website.message}</span>

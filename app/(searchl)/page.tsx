@@ -1,5 +1,5 @@
 "use client";
-import Organization from "../../components/Organization";
+import Organization from "@/components/Organization";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner";
 

@@ -73,9 +73,9 @@ const NewContactPage = () => {
           organization={orgs}
           onCreateContact={handleCreateContact}
         />
-        <Link href={"/"}>
+        {/* <Link href={"/"}>
           <Button variant={"mystyle"}>Back</Button>
-        </Link>
+        </Link> */}
       </div>
     );
   }

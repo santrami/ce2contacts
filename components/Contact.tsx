@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import favicon from "@/public/images/favicon.png";
+import Image from "next/image";
+import Tooltip from "@/components/Tooltip";
 
 interface Organization {
   fullName: string;
@@ -37,11 +40,26 @@ const Contact: React.FC<ContactProps> = ({ contact }) => {
             className="lg:flex lg:justify-between p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-full"
           >
             <div className="flex flex-col gap-2">
-              <span className="text-xl font-semibold">{contact.name}</span>
-              {contact.email}
-              <span className="text-xs font-semibold">
-                {contact.projectParticipation}
+              <span className="flex text-xl font-semibold">
+                {contact.projectParticipation && (
+                  <>
+                  <Tooltip message="CE2 participant">
+                    <Image
+                      className="inline self-center"
+                      src={favicon}
+                      alt="ce2 favicon"
+                      width={19}
+                      height={19}
+                    />
+                    </Tooltip>
+                    &nbsp;
+                  </>
+                )}
+                {contact.name}
               </span>
+
+              {contact.email}
+              <span className="text-xs font-semibold"></span>
               <span className="text-xs font-semibold">
                 {contact.organization.fullName}
               </span>
@@ -66,7 +84,21 @@ const Contact: React.FC<ContactProps> = ({ contact }) => {
         className="lg:flex lg:justify-between p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-full lg:w-2/3"
       >
         <div className="flex flex-col gap-2">
-          <span className="text-xl font-semibold">{contact.name}</span>
+          <span className="flex text-xl font-semibold">
+            {contact.projectParticipation && (
+              <>
+                <Image
+                  className="inline self-center"
+                  src={favicon}
+                  alt="ce2 favicon"
+                  width={19}
+                  height={19}
+                />
+                &nbsp;
+              </>
+            )}
+            {contact.name}
+          </span>
           {contact.email}
           <span className="text-xs font-semibold">
             {contact.projectParticipation}

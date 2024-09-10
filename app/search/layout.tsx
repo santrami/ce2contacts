@@ -12,7 +12,7 @@ export default function RootLayout({
     <Suspense>
       <div className="flex flex-col gap-10 items-center w-full">
         <SearchInput />
-        <div className="flex flex-col items-center w-2/3">{children}</div>
+        <div className="flex flex-col items-center lg:w-2/3">{children}</div>
       </div>
     </Suspense>
   );

@@ -3,6 +3,7 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Select from "react-select";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface FormValues {
   name: string;
@@ -64,7 +65,7 @@ const NewContactForm: React.FC<NewContactFormProps> = ({
   
 
   return (
-    <div className="flex flex-col bg-zinc-900 h-screen justify-center items-center gap-10">
+    <div className="flex flex-col h-auto justify-center items-center gap-10">
       <form
         className="flex flex-col w-fit max-w-lg p-6 gap-5"
         onSubmit={handleSubmit(onSubmit)}
@@ -116,7 +117,7 @@ const NewContactForm: React.FC<NewContactFormProps> = ({
               message: "country required",
             },
           })}
-          className="p-3 rounded block mb-2 bg-slate-900 text-slate-300 w-full"
+          className="p-3 rounded block mb-2 bg-slate-300 text-slate-900 w-full"
           placeholder="country"
         />
         {errors.country && (
@@ -152,10 +153,10 @@ const NewContactForm: React.FC<NewContactFormProps> = ({
         {errors.organizationId && (
           <span className="text-red-500">{errors.organizationId.message}</span>
         )}
-
-        <button className="w-full bg-blue-500 text-white p-3 rounded-lg">
+        <p className="text-sm">*if organization is not listed, you can create one before <span className="text-blue-600"><Link href="/newOrganization">here</Link></span> </p>
+        <Button variant={"ce2"} className="">
           Create Contact
-        </button>
+        </Button>
       </form>
       <Button onClick={() => router.push("/")} variant={"secondary"}>
         back

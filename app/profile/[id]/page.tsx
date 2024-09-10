@@ -4,24 +4,22 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import EditProfileForm from "@/components/EditProfileForm";
 import { ToastContainer, toast } from "react-toastify";
+import { useRouter,useParams } from "next/navigation";
 import "react-toastify/ReactToastify.min.css";
-import { useRouter } from "next/navigation";
-import { useParams } from "next/navigation";
 
 interface UserData {
   name: string;
   email: string;
 }
 
-type queries = {
+type Query = {
   query: string;
-  id: string;
 };
 
 function Page() {
   const { data: session } = useSession();
   const [error, setError] = useState(null);
-  const [data, setData] = useState<queries[]>([]);
+  const [data, setData] = useState<Query[]>([]);
   const [visible, setVisible] = useState(false);
   const router = useRouter();
   const params = useParams();
@@ -37,11 +35,10 @@ function Page() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json(); // Obtén los datos de error del servidor
+        const errorData = await response.json(); // Obtener los datos de error del servidor
         console.log(errorData);
-        throw new Error(errorData.error.meta.target); // Lanza un error con el mensaje del servidor
+        throw new Error(errorData.error.meta.target); // Lanzar un error con el mensaje del servidor
       } else {
-        console.log("New contact created", updateUser);
         toast.success("User updated successfully");
       }
     } catch (error: any) {
@@ -54,8 +51,12 @@ function Page() {
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(`/api/queries/${params?.id}`);
-      const data = await response.json();
-      setData(data);
+      const responseData = await response.json();      
+      
+      const uniqueQueries: Query[] = Array.from(new Set(responseData.map((query) => query.query))).map((query:string) => ({ query }));
+  
+      setData(uniqueQueries);
+      
     };
 
     fetchData();
@@ -69,7 +70,6 @@ function Page() {
           <div className="flex flex-col justify-center items-center gap-3">
             <p className="text-2xl">{session.user.username}</p>
             <p>{session.user.email}</p>
-            <p>{session.user.role}</p>
 
             <Button onClick={() => setVisible(!visible)} variant={"mystyle"}>
               Edit Profile
@@ -83,9 +83,9 @@ function Page() {
         </div>
         <h2 className="flex flex-col flex-wrap text-4xl">my queries</h2>
         <div className="flex flex-wrap gap-3">
-          {data.map((query) => {
+          {data.map((query, index) => {
             return (
-              <div key={query.id} className="flex flex-col gap-3">
+              <div key={index} className="flex flex-col  gap-3">
                 <p>{query.query}</p>
               </div>
             );

@@ -6,6 +6,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import ce2Logo from "@/public/images/climateurope_white.png";
+import { Button } from "@/components/ui/button";
 
 type FormValues = {
   email: string;
@@ -38,63 +41,63 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col bg-slate-800 h-screen justify-center items-center">
-      
-        <div className="flex">
-          <ToastContainer />
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <h1>login</h1>
-            <label
-              htmlFor="email"
-              className="text-slate-500 mb-2 block text-sm"
-            >
-              email:
-            </label>
-            <input
-              type="text" 
-              {...register("email", {
-                required: {
-                  value: true,
-                  message: "email required",
-                },
-              })}
-              className="p-3 rounded block mb-2 bg-slate-900 text-slate-300 w-full"
-              placeholder="user"
-            />
-            {errors.email && (
-              <span className="text-red-500">{errors.email.message}</span>
-            )}
+    <div className="flex flex-col m-auto justify-center items-center">
+      <Image src={ce2Logo} alt="climateurope2 logo" width={280} />
+        <ToastContainer />
+        <form className="flex flex-col min-w-72" onSubmit={handleSubmit(onSubmit)}>
+          <h1 className="text-[#DBF0BD] text-lg">Login</h1>
+          <label htmlFor="email" className="text-slate-500 mb-2 block text-sm">
+            email:
+          </label>
+          <input
+            type="text"
+            {...register("email", {
+              required: {
+                value: true,
+                message: "email required",
+              },
+            })}
+            className="p-3 rounded block mb-2 text-black w-full"
+            placeholder="user"
+          />
+          {errors.email && (
+            <span className="text-red-500">{errors.email.message}</span>
+          )}
 
-            <label
-              htmlFor="password"
-              className="text-slate-500 mb-2 block text-sm"
-            >
-              password:
-            </label>
-            <input
-              type="password"
-              {...register("password", {
-                required: {
-                  value: true,
-                  message: "password required",
-                },
-              })}
-              className="p-3 rounded block mb-2 bg-slate-900 text-slate-300 w-full"
-              placeholder="******"
-              autoComplete="off"
-            />
-            {errors.password && (
-              <span className="text-red-500">{errors.password.message}</span>
-            )}
+          <label
+            htmlFor="password"
+            className="text-slate-500 mb-2 block text-sm"
+          >
+            password:
+          </label>
+          <input
+            type="password"
+            {...register("password", {
+              required: {
+                value: true,
+                message: "password required",
+              },
+            })}
+            className="p-3 rounded block mb-2 text-black w-full"
+            placeholder="******"
+            autoComplete="off"
+          />
+          {errors.password && (
+            <span className="text-red-500">{errors.password.message}</span>
+          )}
 
-            <button className="w-full bg-blue-500 text-white p-3 rounded-lg">
-              Login
-            </button>
-          </form>
-        </div>
-      <div className="cursor-pointer hover:underline">
-         <Link href="/reset-password" className="text-green-400 text-sm mt-4">Forgot your password?</Link>
+          <Button className="w-2/3 self-center" variant={"ce2"}>
+            LOGIN
+          </Button>
+        </form>
+      <div className="flex cursor-pointer hover:underline">
+        <Link href="/reset-password" className="text-green-400 text-sm mt-4">
+          Forgot your password?
+        </Link>
       </div>
+      <p className="text-xs self-end">
+        For inquiries or additional support, please feel free to contact us.
+      </p>
     </div>
   );
 }

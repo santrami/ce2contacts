@@ -82,7 +82,7 @@ const Organization = ({
           key={organization.id}
           className="lg:flex lg:justify-between justify-center p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-full"
         >
-          <div className="flex flex-col gap-2">
+          <div className="flex items-center lg:items-start flex-col gap-2">
             <span className="text-xl font-semibold content-center">
               {organization.fullName}
             </span>
@@ -100,7 +100,7 @@ const Organization = ({
               {organization.country}
             </span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex justify-center gap-2 mt-2">
             <Link href={`/organizations/${organization.id}`}>
               <Button variant={"secondary"}>Contacts</Button>
             </Link>
