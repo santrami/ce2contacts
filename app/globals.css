@@ -19,20 +19,40 @@
     background-color: #0E76B5;
     padding: 20px;
 
-    @media screen and (max-width:600px) {
-      flex-direction: column;
-
-      & > div {
-        width: 100%;
+    &>div {
+      @media screen and (max-width:800px) {
+        flex-direction: column-reverse;
+        row-gap: 30px;
+        & > div {
+          
+          width: 100%;
+        }     
       }
-    
-    
     }
   }
 
-  .ce2-background > div > img{
-    width: 50%;
+  .keep-in-touch{
+    min-width: 30%;
+    text-align: right;
+
+    @media screen and (max-width:800px) { 
+      text-align: center;
+    }
   }
+
+  .social-icons{
+    margin-top: 20px;
+
+    @media screen and (max-width:800px) {
+      flex-direction: column!important;
+      row-gap: 5px!important;
+    }
+
+  }
+
+/*   .ce2-background > div > img{
+    width: 300px;
+  } */
 
   .ce2-background > div{
     

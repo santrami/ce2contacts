@@ -4,6 +4,7 @@ interface Participation {
   event: string | undefined;
   registrationTime: string;
   timeParticipation: number;
+  eventWebsite: string | undefined;
 }
 
 const Participation = (participation: Participation) => {
@@ -11,6 +12,7 @@ const Participation = (participation: Participation) => {
     <div className="p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600">
         <div className="flex flex-col gap-2 items-center text-center">
           <span className="text-xl font-semibold">{participation.event}</span>
+          <a target="_blank" href={participation.eventWebsite}><span className="text-xs font-semibold">{participation.eventWebsite}</span></a>
           {/*{participation.organization}
            <span className="text-xs font-semibold">
             {new Date(participation.registrationTime).toUTCString().split(" ").slice(0, 5).join(" ")}

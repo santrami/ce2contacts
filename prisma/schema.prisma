@@ -3,25 +3,21 @@ generator client {
 }
 
 datasource db {
-  provider              = "mysql"
-  url                   = env("DATABASE_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
   id                        Int           @id @default(autoincrement())
-  //id       String  @id @default(cuid())
   username                  String        @unique(map: "username") @db.VarChar(255)
   email                     String        @unique(map: "email") @db.VarChar(255)
   password                  String        @db.VarChar(255)
   role                      String        @db.VarChar(255)
   emailResetPassword        String?       @db.Text
   passwordResetTokenExpires DateTime?
+  contactId                 Int           @unique
   queries                   SearchQuery[]
   contact                   Contact       @relation(fields: [contactId], references: [id])
-  contactId                 Int           @unique
-
-  // accounts      Account[]
-  // sessions      Session[]
 }
 
 model Contact {
@@ -29,18 +25,20 @@ model Contact {
   name                 String          @db.VarChar(255)
   email                String          @unique(map: "email") @db.VarChar(255)
   organizationId       Int?
-  organization         Organization?   @relation(fields: [organizationId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contact_ibfk_1")
-  country              String?
   projectParticipation Boolean
-  termsId              Int?
-  acceptedTerms        Terms?          @relation(fields: [termsId], references: [id])
   sectorId             Int?
-  sector               Sector?         @relation(fields: [sectorId], references: [id])
-  participation        Participation[]
+  termsId              Int?
   userId               Int?
+  country              String?
+  sector               Sector?         @relation(fields: [sectorId], references: [id])
+  acceptedTerms        Terms?          @relation(fields: [termsId], references: [id])
+  organization         Organization?   @relation(fields: [organizationId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contact_ibfk_1")
+  participation        Participation[]
   user                 User?
 
   @@index([organizationId], map: "organizationId")
+  @@index([sectorId], map: "Contact_sectorId_fkey")
+  @@index([termsId], map: "Contact_termsId_fkey")
 }
 
 model Organization {
@@ -65,19 +63,22 @@ model SearchQuery {
   query  String
   userId Int
   user   User   @relation(fields: [userId], references: [id])
+
+  @@index([userId], map: "SearchQuery_userId_fkey")
 }
 
 model Event {
   id              Int             @id @default(autoincrement())
   name            String          @db.VarChar(255)
-  internalEventId String          @db.VarChar(255)
   scheduledDate   DateTime        @db.DateTime(0)
   duration        Int
   usersRegistered Int
   usersApproved   Int
   usersDenied     Int
   usersCancelled  Int
+  website         String          @db.VarChar(255)
   organizationId  Int?
+  internalEventId String          @db.VarChar(255)
   organization    Organization?   @relation(fields: [organizationId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_ibfk_1")
   participation   Participation[]
 
@@ -86,13 +87,13 @@ model Event {
 
 model Participation {
   id                Int                           @id @default(autoincrement())
+  contactId         Int
+  eventId           Int
   registrationTime  DateTime?                     @db.DateTime(0)
   timeParticipation Int?
   approvalStatus    participation_approvalStatus? @default(pending)
-  isPanelist        Boolean?                      @db.TinyInt
-  contactId         Int
+  isPanelist        Boolean?
   contact           Contact                       @relation(fields: [contactId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participation_ibfk_1")
-  eventId           Int
   event             Event                         @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participation_ibfk_2")
 
   @@index([contactId], map: "contactId")
@@ -111,42 +112,3 @@ enum participation_approvalStatus {
   denied
   cancelled
 }
-
-//for next-auth sessions and users
-
-// model Account {
-//   id                 String  @id @default(cuid())
-//   //userId             Int
-//   userId             String
-//   type               String
-//   provider           String
-//   providerAccountId  String
-//   refresh_token      String?  @db.Text
-//   access_token       String?  @db.Text
-//   expires_at         Int?
-//   token_type         String?
-//   scope              String?
-//   id_token           String?  @db.Text
-//   session_state      String?
-
-//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-//   @@unique([provider, providerAccountId])
-// }
-
-// model Session {
-//   id           String   @id @default(cuid())
-//   sessionToken String   @unique
-//   //userId       Int
-//   userId       String
-//   expires      DateTime
-//   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-// }
-
-// model VerificationToken {
-//   identifier String
-//   token      String   @unique
-//   expires    DateTime
-
-//   @@unique([identifier, token])
-// }

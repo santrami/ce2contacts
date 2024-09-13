@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 interface Event {
   name: string;
   internalID: number;
+  website: string;
 }
 
 interface ParticipationProps {
@@ -113,6 +114,7 @@ function ContactDetails(contact: Props) {
                 registrationTime={participation.registrationTime}
                 timeParticipation={participation.timeParticipation}
                 event={participation.event?.name}
+                eventWebsite={participation.event?.website}
               />
             ))
           ) : (
