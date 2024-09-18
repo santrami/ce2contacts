@@ -4,6 +4,17 @@ import Select from "react-select";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface FormValues {
   name: string;
@@ -37,6 +48,7 @@ const NewContactForm: React.FC<NewContactFormProps> = ({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [country, setCountry] = useState("");
+  const [open, setOpen] = useState(false);
 
   const router = useRouter();
 
@@ -52,6 +64,8 @@ const NewContactForm: React.FC<NewContactFormProps> = ({
 
     // Llamar a la función de callback para pasar el nuevo contacto al componente padre
     onCreateContact(newContact);
+
+    setOpen(false);
 
     // Limpiar el formulario después de crear el contacto
     setName("");
@@ -154,9 +168,28 @@ const NewContactForm: React.FC<NewContactFormProps> = ({
           <span className="text-red-500">{errors.organizationId.message}</span>
         )}
         <p className="text-sm">*if organization is not listed, you can create one before <span className="text-blue-600"><Link href="/newOrganization">here</Link></span> </p>
-        <Button variant={"ce2"} className="">
-          Create Contact
-        </Button>
+        {/**********************  Alert Dialog ************************/}
+
+        <AlertDialog open={open} onOpenChange={setOpen}>
+          <AlertDialogTrigger asChild>
+            <Button variant={"ce2"}>Create Contact</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently update your
+                account and remove your old data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleSubmit(onSubmit)} asChild>
+                <Button variant={"ce2"}>Create Contact</Button>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </form>
       <Button onClick={() => router.push("/")} variant={"secondary"}>
         back

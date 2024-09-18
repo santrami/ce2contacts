@@ -3,6 +3,17 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Select from "react-select";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 
 interface FormValues {
@@ -28,14 +39,11 @@ const NewContactForm: React.FC<NewOrganizationFormProps> = ({ onCreateOrganizati
     handleSubmit,
     control,
     formState: { errors },
+    reset
   } = useForm<FormValues>();
-  const [acronym, setAcronym] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [regionalName, setRegionalName] = useState("");
-  const [website, setWebsite] = useState("");
-  const [country, setCountry] = useState("");
+  
   const [countries, setCountries] = useState<Country[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState({});
+  const [open, setOpen] = useState(false);
 
   const router = useRouter();
 
@@ -52,7 +60,12 @@ const NewContactForm: React.FC<NewOrganizationFormProps> = ({ onCreateOrganizati
     // Llamar a la función de callback para pasar el nuevo contacto al componente padre
     onCreateOrganization(newOrganization);
 
-    // Limpiar el formulario después de crear el contacto
+    reset();
+
+
+    setOpen(false);
+
+    // Limpiar el formulario después de crear la organización
   };
 
   const fetchCountries = async () => {
@@ -69,9 +82,9 @@ const NewContactForm: React.FC<NewOrganizationFormProps> = ({ onCreateOrganizati
   }, []);
 
   return (
-    <div className="flex flex-col h-screen justify-center items-center gap-10">
+    <div className="flex flex-col h-auto justify-center items-center gap-3">
       <form
-        className="flex flex-col w-fit max-w-lg p-6 gap-5"
+        className="flex flex-col w-fit max-w-lg p-6 gap-3"
         onSubmit={handleSubmit(onSubmit)}
       >
         {/* acronym */}
@@ -154,9 +167,28 @@ const NewContactForm: React.FC<NewOrganizationFormProps> = ({ onCreateOrganizati
           <span className="text-red-500">{errors.country.message}</span>
         )}
 
-        <button className="w-full bg-blue-500 text-white p-3 rounded-lg">
-          Create Organization
-        </button>
+        {/**********************  Alert Dialog ************************/}
+
+        <AlertDialog open={open} onOpenChange={setOpen}>
+          <AlertDialogTrigger asChild>
+            <Button variant={"ce2"}>Create Organization</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently update your
+                account and remove your old data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleSubmit(onSubmit)} asChild>
+                <Button variant={"ce2"}>Create Organization</Button>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </form>
       <Button onClick={() => router.push("/")} variant={"secondary"}>
         back

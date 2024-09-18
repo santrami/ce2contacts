@@ -27,7 +27,7 @@ function Footer() {
               activities, please subscribe to our mailing list.{" "}
             </p>
             <a target="_blank" href="https://form.typeform.com/to/j28bLgdT?typeform-source=climateurope2.eu">
-              <Button variant={"ce2"}>Subscribe</Button>
+              <Button className="mt-4" variant={"ce2"}>Subscribe</Button>
             </a>
           </div>
         </div>

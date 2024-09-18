@@ -30,6 +30,8 @@ interface ContactProps {
       }>;
 }
 const Contact: React.FC<ContactProps> = ({ contact }) => {
+  console.log(contact);
+  
   if (Array.isArray(contact)) {
     // if array, map and render each element
     return (

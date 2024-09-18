@@ -30,6 +30,8 @@ export default async function handler(
           sector:true,
         },
       });
+      console.log(contact);
+      
 
       if (!contact) {
         return res.status(404).json({ message: "Organization not found" });

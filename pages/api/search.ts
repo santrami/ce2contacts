@@ -24,15 +24,9 @@ export default async function handler(
       if (typeof query !== "string") {
         throw new Error("Invalid request");
       }
-      console.log("soy query", query);
       
       /*save query per user*/
 
-      const user= await prisma.user.findUnique({
-        where: {
-          id: Number(userId)
-        }
-      })
 
       await prisma.searchQuery.create({
         data: {
@@ -104,8 +98,6 @@ export default async function handler(
           },
         });
 
-        console.log("soy organization", organization);
-        console.log("soy contact", contact);
 
       /**
        * Save search

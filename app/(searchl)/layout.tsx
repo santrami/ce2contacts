@@ -19,6 +19,9 @@ export default function RootLayout({
         <Button variant={"secondary"}>
           <Link href="/newOrganization">Create organization</Link>
         </Button>
+        <Button variant={"ce2"}>
+          <Link href="/project-participants">Project participant list</Link>
+        </Button>
         
       </div>
       <Suspense>

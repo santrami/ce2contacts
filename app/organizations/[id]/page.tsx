@@ -1,8 +1,7 @@
 "use client";
 import useSWR from "swr";
-import OrganizationDetails from "../../../components/OrganizationDetails";
+import OrganizationDetails from "@/components/OrganizationDetails";
 import Spinner from "@/components/Spinner";
-import SigninButton from "@/components/SigninButton";
 
 interface Contact {
   id: number;

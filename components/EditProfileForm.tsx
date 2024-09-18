@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useParams } from "next/navigation";
 
@@ -24,7 +24,7 @@ interface FormValues {
 
 const EditProfileForm = ({ onEditProfile }) => {
   const params = useParams();
-  const dialogAlert = useRef(null);
+  const [open, setOpen] = useState(false);
   const {
     register,
     handleSubmit,
@@ -37,7 +37,7 @@ const EditProfileForm = ({ onEditProfile }) => {
       email: "",
       password: "",
       confirm_password: "",
-    }, // <-- Forma de inicializar los valores del formulario con los valores por default
+    },
   });
 
   useEffect(() => {
@@ -48,35 +48,19 @@ const EditProfileForm = ({ onEditProfile }) => {
       reset(user);
     };
     profile();
-  }, [reset]);
+  }, [reset, params!.id]);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    // Modificar usuario
     const editProfile = {
       username: data.username,
       email: data.email,
       password: data.password,
     };
-    const dialog = document.getElementById("radix-:r0:");
 
-    // Remove the dialog element if it exists
-    if (dialog) {
-      // Get the previous sibling of the dialog element
-      const previousSibling = dialog.previousElementSibling;
-
-      // Remove the previous sibling if it exists
-      if (previousSibling) {
-        previousSibling.remove();
-      }
-
-      // Finally, remove the dialog element
-      dialog.remove();
-    }
-
-    const body= document.getElementsByTagName("body")
-    body[0].style.removeProperty("pointer-events")
-    // Llamar a la función de callback para pasar el nuevo contacto al componente padre
+    // Call the parent component's edit function
     onEditProfile(editProfile);
+
+    setOpen(false);
   };
 
   return (
@@ -101,7 +85,7 @@ const EditProfileForm = ({ onEditProfile }) => {
         )}
 
         <label htmlFor="email" className="text-slate-500 mb-2 block text-sm">
-          email:
+          Email:
         </label>
         <input
           type="email"
@@ -112,25 +96,25 @@ const EditProfileForm = ({ onEditProfile }) => {
             },
           })}
           className="p-3 rounded block mb-2 bg-slate-300 text-slate-900 w-full"
-          placeholder="email"
+          placeholder="Email"
         />
         {errors.email && (
           <span className="text-red-500">{errors.email.message}</span>
         )}
 
         <label htmlFor="password" className="text-slate-500 mb-2 block text-sm">
-          new Password:
+          New Password:
         </label>
         <input
           type="password"
           {...register("password", {
             required: {
               value: true,
-              message: "password required",
+              message: "Password required",
             },
           })}
           className="p-3 rounded block mb-2 bg-slate-300 text-slate-900 w-full"
-          placeholder="new Password"
+          placeholder="New Password"
         />
         {errors.password && (
           <span className="text-red-500">{errors.password.message}</span>
@@ -140,21 +124,20 @@ const EditProfileForm = ({ onEditProfile }) => {
           htmlFor="confirm_password"
           className="text-slate-500 mb-2 block text-sm"
         >
-          confirm Password:
+          Confirm Password:
         </label>
         <input
           type="password"
           {...register("confirm_password", {
             required: true,
-
             validate: (val: string) => {
-              if (watch("password") != val) {
-                return "Your passwords do no match";
+              if (watch("password") !== val) {
+                return "Passwords do not match";
               }
             },
           })}
           className="p-3 rounded block mb-2 bg-slate-300 text-slate-900 w-full"
-          placeholder="new Password"
+          placeholder="Confirm Password"
         />
         {errors.confirm_password && (
           <span className="text-red-500">
@@ -162,9 +145,9 @@ const EditProfileForm = ({ onEditProfile }) => {
           </span>
         )}
 
-        {/**********************  alert dialog ************************/}
+        {/**********************  Alert Dialog ************************/}
 
-        <AlertDialog>
+        <AlertDialog open={open} onOpenChange={setOpen}>
           <AlertDialogTrigger asChild>
             <Button variant={"ce2"}>Edit Profile</Button>
           </AlertDialogTrigger>
@@ -184,9 +167,6 @@ const EditProfileForm = ({ onEditProfile }) => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        <button className="w-full bg-blue-500 text-white p-3 rounded-lg">
-          Edit Profile
-        </button>
       </form>
     </div>
   );

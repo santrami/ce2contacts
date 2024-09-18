@@ -1,9 +1,20 @@
 import { useEffect, useState } from "react";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { useForm, SubmitHandler, Controller, set } from "react-hook-form";
 import Select from "react-select";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface FormValues {
   name: string;
@@ -42,6 +53,7 @@ const EditContactForm: React.FC<EditContactFormProps> = ({
   });
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [open, setOpen] = useState(false);
 
   const params = useParams();
 
@@ -75,6 +87,8 @@ const EditContactForm: React.FC<EditContactFormProps> = ({
     // Llamar a la función de callback para pasar el nuevo contacto al componente padre
     onEditContact(editContact);
 
+    setOpen(false);
+
     // Limpiar el formulario después de crear el contacto
     setName("");
     setEmail("");
@@ -82,8 +96,8 @@ const EditContactForm: React.FC<EditContactFormProps> = ({
   
 
   return (
-    <div className="flex-col bg-slate-800 h-[calc(100vh)] flex justify-center items-center">
-      <form className="w-fit p-6" onSubmit={handleSubmit(onSubmit)}>
+    <div className="flex-col h-auto flex justify-center items-center">
+      <form className="flex flex-col gap-2 w-fit p-6 items-center justify-center" onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="name" className="text-slate-500 mb-2 block text-sm">
           Complete Name:
         </label>
@@ -148,13 +162,32 @@ const EditContactForm: React.FC<EditContactFormProps> = ({
           <span className="text-red-500">{errors.organizationId.message}</span>
         )}
 
-        <button className="w-full bg-blue-500 text-white p-3 rounded-lg mt-4">
-          Edit Contact
-        </button>
+        {/**********************  Alert Dialog ************************/}
+
+        <AlertDialog open={open} onOpenChange={setOpen}>
+          <AlertDialogTrigger asChild>
+            <Button variant={"ce2"}>Edit Contact</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently update your
+                account and remove your old data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleSubmit(onSubmit)} asChild>
+                <Button variant={"ce2"}>Confirm Edit</Button>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </form>
-      <Button onClick={() => router.push("/")} variant={"secondary"}>
+      {/* <Button onClick={() => router.push("/")} variant={"secondary"}>
         back
-      </Button>
+      </Button> */}
     </div>
   );
 };

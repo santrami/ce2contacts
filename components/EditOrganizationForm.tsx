@@ -1,5 +1,17 @@
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "./ui/button";
 
 interface FormValues {
   acronym: string;
@@ -40,6 +52,7 @@ const EditOrganizationForm = ({ onEditOrganization, organization }) => {
   const [regionalName, setRegionalName] = useState("");
   const [website, setWebsite] = useState("");
   const [country, setCountry] = useState("");
+  const [open, setOpen] = useState(false);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     const editOrganization: FormValues = {
@@ -53,18 +66,15 @@ const EditOrganizationForm = ({ onEditOrganization, organization }) => {
     // Llamar a la función de callback para pasar el nuevo contacto al componente padre
     onEditOrganization(editOrganization);
 
+    setOpen(false);
+
     // Limpiar el formulario después de crear el contacto
-    setAcronym("");
-    setFullName("");
-    setRegionalName("");
-    setWebsite("");
-    setCountry("");
   };
 
   return (
-    <div className="flex flex-col bg-zinc-900 justify-center items-center gap-10">
+    <div className="flex flex-col justify-center items-center gap-2">
       <form
-        className="flex flex-col w-fit max-w-lg p-6 gap-5"
+        className="flex flex-col w-fit max-w-lg p-6 gap-2"
         onSubmit={handleSubmit(onSubmit)}
       >
         <label htmlFor="acronym" className="text-slate-500 mb-2 block text-sm">
@@ -160,9 +170,28 @@ const EditOrganizationForm = ({ onEditOrganization, organization }) => {
           <span className="text-red-500">{errors.country.message}</span>
         )}
 
-        <button className="w-full bg-blue-500 text-white p-3 rounded-lg">
-          Edit Organization
-        </button>
+        {/**********************  Alert Dialog ************************/}
+
+        <AlertDialog open={open} onOpenChange={setOpen}>
+          <AlertDialogTrigger asChild>
+            <Button variant={"ce2"}>Edit Contact</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently update your
+                account and remove your old data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleSubmit(onSubmit)} asChild>
+                <Button variant={"ce2"}>Confirm Edit</Button>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </form>
     </div>
   );
