@@ -48,7 +48,7 @@ const EditProfileForm = ({ onEditProfile }) => {
       reset(user);
     };
     profile();
-  }, [reset, params!.id]);
+  }, [reset, params]);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     const editProfile = {

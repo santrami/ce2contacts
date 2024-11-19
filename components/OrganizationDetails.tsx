@@ -11,7 +11,8 @@ interface Contacts {
   organizationId: number;
   projectParticipation: boolean;
   isActive: boolean;
-  organization: Organization
+  organization: Organization;
+  orgname: string | undefined;
 }
 
 interface Organization {
@@ -43,6 +44,9 @@ function OrganizationDetails(organization: Props) {
     organization.organization?.acronym,
     c.projectParticipation,
   ]);
+
+  console.log(organization.organization?.contact);
+  
 
   return (
     <>
@@ -94,7 +98,7 @@ function OrganizationDetails(organization: Props) {
         <h1 className="pt-5 flex justify-center items-center self-center">Contacts</h1>
         <div className="flex flex-col items-center lg:w-full">
           {organization.organization?.contact.map((contact) => (
-            <Contact key={contact.id} contact={contact} />
+            <Contact orgname={organization.organization?.fullName} key={contact.id} contact={contact} />
           ))}
         </div>
       </div>

@@ -7,6 +7,7 @@ import EditContactForm from "@/components/EditContactForm";
 import { ToastContainer, toast } from "react-toastify";
 import { useParams } from "next/navigation";
 import "react-toastify/ReactToastify.min.css";
+import { useRouter } from "next/navigation";
 
 interface ContactData {
   name: string;
@@ -19,6 +20,7 @@ interface ContactData {
 function Page() {
   const { data: session } = useSession();
   const [error, setError] = useState(null);
+  const router= useRouter();
   const [orgs, setOrgs] = useState<
     {
       id: number;
@@ -75,10 +77,12 @@ function Page() {
             organization={orgs}
             onEditContact={handleEditContact}
           />
-          <Link href={"/"}>
-            <Button variant={"mystyle"}>Back</Button>
-          </Link>
         </div>
+          <div className="flex flex-col justify-center items-center">
+            <Button className="" variant={"secondary"} onClick={()=> router.back()}>
+              back to results
+            </Button>
+          </div>
       </>
     );
   }

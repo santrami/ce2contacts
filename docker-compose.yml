@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   app:
     build:
@@ -11,23 +9,19 @@ services:
       - "3000:3000"
     networks:
       - contacts
-#    env_file:
-#      - .env
     env_file:
       - .env
     depends_on:
       db:
         condition: service_healthy
-    volumes:
-      - .:/app
-      - /app/node_modules
+  #  volumes:
+  #    - .:/app
+  #    - /app/node_modules
 
   db:
     image: mysql:8.0
     container_name: db
     restart: always
-#    env_file:
-#      - .env    
     environment:
     - MYSQL_ROOT_PASSWORD=santiago
     - MYSQL_DATABASE=ce2

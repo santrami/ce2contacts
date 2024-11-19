@@ -1,6 +1,98 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import Pagination from "@/components/Pagination";
+import { useRouter } from "next/navigation";
+
+type OrganizationTable = {
+  id: number;
+  acronym: string | null;
+  fullName: string;
+  regionalName: string | null;
+  website: string | null;
+  country: string | null;
+};
+
+interface OrganizationProps {
+  initialOrganizations: OrganizationTable[];
+  totalPages: number;
+  currentPage: number;
+}
+
+const Organization = ({ initialOrganizations, totalPages, currentPage }: OrganizationProps) => {
+  const [organizations, setOrganizations] = useState(initialOrganizations);
+  const router = useRouter();
+
+  const fetchOrganizations = async (page: number) => {
+    try {
+      const response = await fetch(`/api/organization?page=${page}&limit=15`);
+      if (!response.ok) throw new Error('Failed to fetch organizations');
+      const data = await response.json();
+      setOrganizations(data.organizations);
+      router.push(`?page=${page}`, { scroll: false });
+    } catch (error) {
+      console.error('Error fetching organizations:', error);
+    }
+  };
+
+  const handlePageChange = (page: number) => {
+    fetchOrganizations(page);
+  };
+
+  return (
+    <>
+      {organizations?.map((organization) => (
+        <div
+          key={organization.id}
+          className="lg:flex lg:justify-between justify-center p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-full"
+        >
+          <div className="flex items-center lg:items-start flex-col gap-2">
+            <span className="text-xl font-semibold content-center">
+              {organization.fullName}
+            </span>
+            <a
+              href={organization.website || undefined}
+              target="_blank"
+              className="text-xs font-semibold"
+            >
+              {organization.website}
+            </a>
+            <span className="text-xs font-semibold">
+              {organization.acronym}
+            </span>
+            <span className="text-xs font-semibold">
+              {organization.country}
+            </span>
+          </div>
+          <div className="flex justify-center gap-2 mt-2">
+            <Link href={`/organizations/${organization.id}`}>
+              <Button variant={"secondary"}>Contacts</Button>
+            </Link>
+            <Link href={`/editOrganization/${organization.id}`}>
+              <Button variant={"secondary"}>Edit Organization</Button>
+            </Link>
+          </div>
+        </div>
+      ))}
+      {
+        totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        )
+      }
+    </>
+  );
+};
+
+export default Organization;
+
+/* "use client";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
 type Contact = {
@@ -167,3 +259,4 @@ const Organization = ({
 };
 
 export default Organization;
+ */

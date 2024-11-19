@@ -60,7 +60,7 @@ function Page() {
     };
 
     fetchData();
-  }, []);
+  }, [params?.id]);
 
   if (session && session.user) {
     return (
@@ -71,7 +71,7 @@ function Page() {
             <p className="text-2xl">{session.user.username}</p>
             <p>{session.user.email}</p>
 
-            <Button onClick={() => setVisible(!visible)} variant={"mystyle"}>
+            <Button onClick={() => setVisible(!visible)} variant={"ce2"}>
               Edit Profile
             </Button>
           </div>

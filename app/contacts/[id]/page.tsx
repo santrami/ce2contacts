@@ -6,6 +6,7 @@ import ContactDetails from "@/components/ContactDetails";
 interface Event {
   name: string;
   internalID: number;
+  website:string;
 }
 
 interface ParticipationProps {

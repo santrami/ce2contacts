@@ -1,2 +1,8 @@
 .next
 node_modules
+npm-debug.log
+*.tar 
+Dockerfile
+docker-compose.yml
+.git
+*.log

@@ -19,6 +19,7 @@ export default async function handler(
 ) {
   if (req.method === "GET") {
     try {
+
       const { q: query, userId } = req.query;
 
       if (typeof query !== "string") {
@@ -26,15 +27,12 @@ export default async function handler(
       }
       
       /*save query per user*/
-
-
       await prisma.searchQuery.create({
         data: {
           query:query,
           userId: Number(userId)
         },
       });
-      //console.log(user?.email);
 
       /**
        * Search organization
@@ -67,17 +65,8 @@ export default async function handler(
             ],
           },
         });
-        
-      /**
-       * Save search
-       */
-      /* await prisma.searchQuery.create({
-        data: {
-          query,
-        },
-      }); */
 
-      const contact: Array<Contact> =
+      const contacts: Array<Contact> =
         await prisma.contact.findMany({
           where: {
             OR: [
@@ -99,15 +88,28 @@ export default async function handler(
         });
 
 
-      /**
-       * Save search
-       */
-      /* await prisma.searchQuery.create({
-        data: {
-          query,
-        },
-      }); */
-      res.status(200).json({ organization, contact });
+        
+        const reg = new RegExp('^[0-9]+$');
+        
+        if(query.match(reg)){
+          const contact = await prisma.contact.findUnique({
+            where: {
+              id: Number(query)
+            },
+            include: {
+              organization: true,
+            }
+          });
+  
+          if(contact){
+            res.status(200).json({ contact });
+            return;
+          }
+        }
+
+      
+
+      res.status(200).json({ organization, contacts/* , contact */ });
 
     } catch (error) {
       console.error(error);

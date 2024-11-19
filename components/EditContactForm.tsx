@@ -67,7 +67,7 @@ const EditContactForm: React.FC<EditContactFormProps> = ({
       reset(contact)
     };
     contact();
-  }, [reset]);
+  }, [reset, params]);
 
   const organizationOptions = organization.map((org) => ({
     value: org.id,

@@ -49,11 +49,17 @@ const SearchPage = () => {
     return <Spinner />;
   }
 
-  if (!data.organization && !data.contact) {
+  if (!data) {
     return null;
   }
 
-  if (data.organization.length !== 0 || data.contact.length !== 0 ) {
+  if (data.contact) {
+    return (
+      <Contact contact={data.contact} />
+    )
+  }
+
+  if (data.organization.length !== 0 || data.contacts.length !== 0) {
     
     return (
       <>
@@ -63,7 +69,9 @@ const SearchPage = () => {
         </span>
         <Organization organization={data.organization} />
         <p> <UserRound className="inline-block" /> Contacts results for: {searchQuery}</p>
-        <Contact contact={data.contact} />
+
+        {data.contact && <Contact contact={data.contact} />}
+        <Contact contact={data.contacts} />
       </>
     );
   } else {

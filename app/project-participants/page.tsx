@@ -6,6 +6,7 @@ import { CSVLink } from "react-csv";
 import { Button } from "@/components/ui/button";
 import { FileX2 } from "lucide-react";
 import Paginations from "@/components/Pagination";
+import { useRouter } from "next/navigation";
 
 interface Organization {
   fullName: string;
@@ -30,6 +31,8 @@ export default function Home() {
     const res = await contacts.json();
     setContacts(res.contact);
   };
+
+  const router = useRouter();
 
   const projectContacts = contacts.filter(
     (contact) => contact.projectParticipation === true
@@ -58,6 +61,11 @@ export default function Home() {
   return (
     <div className="self-center w-2/3">
       <div className="flex justify-center">
+      <div className="flex items-end justify-center">
+          <Button onClick={() => router.push("/")} variant={"secondary"}>
+            back
+          </Button>
+        </div>
         <Button variant={"outline"}>
           <CSVLink
             className="text-gray-800"

@@ -32,7 +32,7 @@ function Page() {
       setOrganization(org);
     };
     organization();
-  }, []);
+  }, [params]);
 
   const handleEditOrganization = async (editOrganization: OrganizationData) => {
     try {

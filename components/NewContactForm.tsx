@@ -19,8 +19,8 @@ import {
 interface FormValues {
   name: string;
   email: string;
-  country:string;
   organizationId: number | string;
+  country:string;
 }
 
 type NewContactFormProps = {
@@ -32,7 +32,7 @@ type NewContactFormProps = {
     website: string;
     country: string | null;
   }[];
-  onCreateContact: (newContact: FormValues) => Promise<void>;
+  onCreateContact: (newContact) => Promise<void>;
 };
 
 const NewContactForm: React.FC<NewContactFormProps> = ({
@@ -176,16 +176,15 @@ const NewContactForm: React.FC<NewContactFormProps> = ({
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently update your
-                account and remove your old data from our servers.
+                This action cannot be undone. This will create an organization in our servers.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction onClick={handleSubmit(onSubmit)} asChild>
-                <Button variant={"ce2"}>Create Contact</Button>
+                <Button variant={"ce2"}>Create Organization</Button>
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

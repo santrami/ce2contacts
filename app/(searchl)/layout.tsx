@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export default function RootLayout({
+export default function SearchLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -22,12 +22,11 @@ export default function RootLayout({
         <Button variant={"ce2"}>
           <Link href="/project-participants">Project participant list</Link>
         </Button>
-        
       </div>
-      <Suspense>
+      <Suspense fallback={<div>Loading...</div>}>
         <SearchInput />
       </Suspense>
-      <div className=" lg:w-2/3 w-full p-5">{children}</div>
-    </div>
+      <div className="lg:w-2/3 w-full p-5">{children}</div>
+    </div> 
   );
 }

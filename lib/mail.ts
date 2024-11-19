@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendVerificationEmail(email: string, token: string) {
-  const verificationUrl = `http://localhost:3000/reset-password/${token}`; // Nowy format URL
+  const verificationUrl = `https://ce2contacts.earth.bsc.es/reset-password/${token}`; // Nowy format URL
   await transporter.sendMail({
     from: '"Climate Europe 2 internal" <santiago.ramirez@bsc.es>',
     to: email,
@@ -22,7 +22,7 @@ export async function sendVerificationEmail(email: string, token: string) {
 }
 
 export async function sendPasswordResetEmail(email: string, token: string) {
-  const resetPasswordUrl = `http://localhost:3000/reset-password/${encodeURIComponent(token)}`;
+  const resetPasswordUrl = `https://ce2contacts.earth.bsc.es/reset-password/${encodeURIComponent(token)}`;
   await transporter.sendMail({
     from: '"Climateurope2" <santiago.ramirez@bsc.es>',
     to: email,
