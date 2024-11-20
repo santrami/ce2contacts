@@ -174,7 +174,7 @@ const EditOrganizationForm = ({ onEditOrganization, organization }) => {
 
         <AlertDialog open={open} onOpenChange={setOpen}>
           <AlertDialogTrigger asChild>
-            <Button variant={"ce2"}>Edit Contact</Button>
+            <Button variant={"ce2"}>Edit Organisation</Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>

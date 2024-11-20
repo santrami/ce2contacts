@@ -1,120 +1,119 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prismadb";
 
-type Contact = {
-  id: number;
-  name: string;
-  email: string;
-  organizationId: number | null;
-  country: string | null;
-  projectParticipation: boolean;
-  termsId: number | null;
-  sectorId: number | null;
-  userId: number | null;
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === "GET") {
     try {
+      const { 
+        q: query, 
+        userId,
+        sector
+      } = req.query;
 
-      const { q: query, userId } = req.query;
-
-      if (typeof query !== "string") {
-        throw new Error("Invalid request");
-      }
-      
-      /*save query per user*/
-      await prisma.searchQuery.create({
-        data: {
-          query:query,
-          userId: Number(userId)
-        },
-      });
-
-      /**
-       * Search organization
-       */
-      
-      const organization =
-        await prisma.organization.findMany({
-          where: {
-            OR: [
-              {
-                fullName: {
-                  contains: query,
-                },
-              },
-              {
-                acronym: {
-                  contains: query,
-                },
-              },
-              {
-                country: {
-                  contains: query,
-                },
-              },
-              {
-                regionalName: {
-                  contains: query,
-                },
-              },
-            ],
+      // Save search query if it exists
+      if (query && userId) {
+        await prisma.searchQuery.create({
+          data: {
+            query: query as string,
+            userId: Number(userId)
           },
         });
+      }
 
-      const contacts: Array<Contact> =
-        await prisma.contact.findMany({
+      // Base conditions for contacts
+      const contactWhere: any = {};
+
+      // Add text search conditions if query exists
+      if (query) {
+        contactWhere.OR = [
+          { name: { contains: query as string } },
+          { email: { contains: query as string } },
+          { 
+            organization: {
+              OR: [
+                { fullName: { contains: query as string } },
+                { acronym: { contains: query as string } },
+                { regionalName: { contains: query as string } },
+              ]
+            } 
+          }
+        ];
+      }
+
+      // Add sector filter if present
+      if (sector) {
+        contactWhere.sectorId = parseInt(sector as string);
+      }
+
+      // Handle numeric ID search if query exists
+      if (query && /^\d+$/.test(query as string)) {
+        const contact = await prisma.contact.findUnique({
           where: {
-            OR: [
-              {
-                name: {
-                  contains: query,
-                },
-              },
-              {
-                email: {
-                  contains: query,
-                },
-              },
-            ],
+            id: Number(query)
           },
           include: {
             organization: true,
-          },
+            sector: true
+          }
         });
 
+        if (contact) {
+          res.status(200).json({ contact });
+          return;
+        }
+      }
 
-        
-        const reg = new RegExp('^[0-9]+$');
-        
-        if(query.match(reg)){
-          const contact = await prisma.contact.findUnique({
+      // If sector filter is applied, only search contacts
+      if (sector) {
+        const contacts = await prisma.contact.findMany({
+          where: contactWhere,
+          include: {
+            organization: true,
+            sector: true
+          }
+        });
+
+        res.status(200).json({ contacts });
+        return;
+      }
+
+      // For text search, get both organizations and contacts
+      if (query) {
+        const [organization, contacts] = await Promise.all([
+          prisma.organization.findMany({
             where: {
-              id: Number(query)
+              OR: [
+                { fullName: { contains: query as string } },
+                { acronym: { contains: query as string } },
+                { regionalName: { contains: query as string } },
+              ]
             },
             include: {
-              organization: true,
+              contact: true
             }
-          });
-  
-          if(contact){
-            res.status(200).json({ contact });
-            return;
-          }
-        }
+          }),
+          prisma.contact.findMany({
+            where: contactWhere,
+            include: {
+              organization: true,
+              sector: true
+            }
+          })
+        ]);
 
-      
+        res.status(200).json({ organization, contacts });
+        return;
+      }
 
-      res.status(200).json({ organization, contacts/* , contact */ });
+      // If no filters, return empty results
+      res.status(200).json({ contacts: [] });
 
     } catch (error) {
       console.error(error);
-      
-      res.status(500).end();
+      res.status(500).json({ error: error.message });
     }
   }
 }
