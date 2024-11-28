@@ -1,58 +1,41 @@
-"use client";
 import Contact from "@/components/Contact";
-import { useEffect, useState } from "react";
-import Spinner from "@/components/Spinner";
-import { CSVLink } from "react-csv";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { FileX2 } from "lucide-react";
-import Paginations from "@/components/Pagination";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import prisma from "@/lib/prismadb";
 
-interface Organization {
-  fullName: string;
+async function getProjectParticipants() {
+  const contacts = await prisma.contact.findMany({
+    where: {
+      projectParticipation: true
+    },
+    include: {
+      organization: true,
+      sector: true,
+      tags: {
+        include: {
+          tag: true
+        }
+      }
+    }
+  });
+
+  return contacts.map(contact => ({
+    ...contact,
+    tags: contact.tags.map(t => ({
+      id: t.tag.id,
+      name: t.tag.name,
+      color: t.tag.color
+    }))
+  }));
 }
 
-export default function Home() {
-  const [contacts, setContacts] = useState<
-    {
-      id: number;
-      name: string;
-      email: string;
-      organizationId: number;
-      projectParticipation: boolean;
-      organization: Organization;
-      isActive: boolean;
-    }[]
-  >([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const contactList = async () => {
-    const contacts = await fetch("/api/contact-list");
-    const res = await contacts.json();
-    setContacts(res.contact);
-  };
-
-  const router = useRouter();
-
-  const projectContacts = contacts.filter(
-    (contact) => contact.projectParticipation === true
-  );
-
-  useEffect(() => {
-    contactList();
-    setIsLoading(false);
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center">
-        <Spinner />
-      </div>
-    );
-  }
+export default async function ProjectParticipants() {
+  const contacts = await getProjectParticipants();
 
   const headers = ["name", "email", "organizationFullName"];
-  const csvdata = projectContacts.map((c) => [
+  const csvdata = contacts.map((c) => [
     c.name,
     c.email,
     c.organization?.fullName,
@@ -60,24 +43,32 @@ export default function Home() {
 
   return (
     <div className="self-center w-2/3">
-      <div className="flex justify-center">
-      <div className="flex items-end justify-center">
-          <Button onClick={() => router.push("/")} variant={"secondary"}>
-            back
-          </Button>
-        </div>
-        <Button variant={"outline"}>
-          <CSVLink
+      <div className="flex justify-center gap-4">
+        <Link href="/">
+          <Button variant="secondary">back</Button>
+        </Link>
+        <Button variant="outline">
+          <Link
+            href={`data:text/csv;charset=utf-8,${encodeURIComponent(
+              [headers.join(","), ...csvdata.map(row => row.join(","))].join("\n")
+            )}`}
+            download="project-participants.csv"
             className="text-gray-800"
-            data={csvdata}
-            headers={headers}
-            filename={`project participants`}
           >
-            <FileX2 className="inline-block" /> Download contacts
-          </CSVLink>
+            <FileX2 className="inline-block mr-2" /> Download contacts
+          </Link>
         </Button>
       </div>
-      <Contact contact={projectContacts} />
+      <div className="mt-6">
+        <Suspense fallback={<div>Loading...</div>}>
+          {contacts.length > 0 ? (
+            /* @ts-ignore */
+            <Contact contact={contacts} />
+          ) : (
+            <p className="text-center mt-4">No project participants found</p>
+          )}
+        </Suspense>
+      </div>
     </div>
   );
 }

@@ -36,7 +36,6 @@ function Page() {
 
       if (!response.ok) {
         const errorData = await response.json(); // Obtener los datos de error del servidor
-        console.log(errorData);
         throw new Error(errorData.error.meta.target); // Lanzar un error con el mensaje del servidor
       } else {
         toast.success("User updated successfully");

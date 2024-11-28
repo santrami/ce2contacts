@@ -1,26 +1,23 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import EditContactForm from "@/components/EditContactForm";
 import { ToastContainer, toast } from "react-toastify";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import "react-toastify/ReactToastify.min.css";
-import { useRouter } from "next/navigation";
 
 interface ContactData {
   name: string;
   email: string;
   organizationId: number;
-  projectParticipation: string;
-  isActive: boolean;
+  country: string;
 }
 
 function Page() {
   const { data: session } = useSession();
   const [error, setError] = useState(null);
-  const router= useRouter();
+  const router = useRouter();
   const [orgs, setOrgs] = useState<
     {
       id: number;
@@ -37,10 +34,10 @@ function Page() {
   useEffect(() => {
     organizations();
   }, []);
+
   const organizations = async () => {
     const orgs = await fetch("/api/organizationList");
     const res = await orgs.json();
-
     setOrgs(res.organization);
   };
 
@@ -55,16 +52,15 @@ function Page() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json(); // Obtén los datos de error del servidor
-        console.log(errorData);
-        throw new Error(errorData.error.meta.target); // Lanza un error con el mensaje del servidor
-      } else {
-        toast.success("Contact updated successfully");
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update contact');
       }
+
+      toast.success("Contact updated successfully");
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
       setError(error.message);
-      toast.error(`${error.message} already exists, try another one`);
+      toast.error(error.message);
     }
   };
 
@@ -78,11 +74,11 @@ function Page() {
             onEditContact={handleEditContact}
           />
         </div>
-          <div className="flex flex-col justify-center items-center">
-            <Button className="" variant={"secondary"} onClick={()=> router.back()}>
-              back to results
-            </Button>
-          </div>
+        <div className="flex flex-col justify-center items-center">
+          <Button className="" variant={"secondary"} onClick={() => router.back()}>
+            back to results
+          </Button>
+        </div>
       </>
     );
   }

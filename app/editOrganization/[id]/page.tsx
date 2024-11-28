@@ -68,7 +68,7 @@ function Page() {
             onEditOrganization={handleEditOrganization}
           />
           <Link href={"/"}>
-            <Button variant={"mystyle"}>Back</Button>
+            <Button>Back</Button>
           </Link>
         </div>
       </>

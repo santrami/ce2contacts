@@ -3,40 +3,64 @@ import { useEffect, useState } from "react";
 import NewContactForm from "@/components/NewContactForm";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/ReactToastify.min.css";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useSession } from "next-auth/react";
-import "react-toastify/ReactToastify.min.css";
 
 interface ContactData {
   name: string;
   email: string;
   organizationId: number;
-  projectParticipation: string;
-  isActive: boolean;
+  projectParticipation: boolean;
+  sectorId: number;
+  country: string;
+}
+
+interface Organization {
+  id: number;
+  acronym: string;
+  fullName: string;
+  regionalName: string | null;
+  website: string;
+  country: string | null;
+}
+
+interface Sector {
+  id: number;
+  name: string;
 }
 
 const NewContactPage = () => {
   const { data: session } = useSession();
   const [error, setError] = useState(null);
-  const [orgs, setOrgs] = useState<
-    {
-      id: number;
-      acronym: string;
-      fullName: string;
-      regionalName: string | null;
-      website: string;
-      country: string | null;
-    }[]
-  >([]);
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [sectors, setSectors] = useState<Sector[]>([]);
 
   useEffect(() => {
-    organizations();
+    const fetchData = async () => {
+      try {
+        const [orgsResponse, sectorsResponse] = await Promise.all([
+          fetch("/api/organizationList"),
+          fetch("/api/sectors")
+        ]);
+
+        const orgsData = await orgsResponse.json();
+        const sectorsData = await sectorsResponse.json();
+
+        setOrganizations(orgsData.organization);
+        setSectors(sectorsData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Failed to load required data");
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleCreateContact = async (newContact: ContactData) => {
     try {
-      const response = await fetch("/api/newContact", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,40 +69,35 @@ const NewContactPage = () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json(); // Obtén los datos de error del servidor
-        console.log(errorData);
-        throw new Error(errorData.error.meta.target); // Lanza un error con el mensaje del servidor
-      } else {
-        console.log("New contact created", newContact);
-        toast.success("New contact created");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create contact");
       }
+
+      toast.success("Contact created successfully");
     } catch (error: any) {
       console.error(error);
       setError(error.message);
-      toast.error(`${error.message} already exists`);
+      toast.error(error.message);
     }
   };
 
-  const organizations = async () => {
-    const orgs = await fetch("/api/organizationList");
-    const res = await orgs.json();
-
-    setOrgs(res.organization);
-  };
-  if (session && session.user) {
-    return (
-      <div>
-        <ToastContainer />
-        <NewContactForm
-          organization={orgs}
-          onCreateContact={handleCreateContact}
-        />
-        {/* <Link href={"/"}>
-          <Button variant={"mystyle"}>Back</Button>
-        </Link> */}
-      </div>
-    );
+  if (!session?.user) {
+    return null;
   }
+
+  return (
+    <div className="flex flex-col gap-16 min-w-full w-2/3">
+      <ToastContainer />
+      <NewContactForm
+        organization={organizations}
+        sectors={sectors}
+        onCreateContact={handleCreateContact}
+      />
+      <Link style={{display:"flex",alignSelf:"center"}} href={"/"}>
+          <Button variant={"default"}>Back</Button>
+        </Link>
+    </div>
+  );
 };
 
 export default NewContactPage;

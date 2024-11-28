@@ -3,6 +3,7 @@ import Contact from "./Contact";
 import { CSVLink } from "react-csv";
 import Link from "next/link";
 import { FileX2 } from "lucide-react";
+import { ChangeHistory } from "@/components/ChangeHistory";
 
 interface Contacts {
   id: number;
@@ -45,18 +46,14 @@ function OrganizationDetails(organization: Props) {
     c.projectParticipation,
   ]);
 
-  console.log(organization.organization?.contact);
-  
-
   return (
     <>
       <div className="flex flex-col gap-10 items-center p-6">
-      <div>
+        <div>
           <div>
             <Button variant={"secondary"}>
               <Link href="/">back to organizations</Link>
             </Button>
-            
           </div>
         </div>
         <div
@@ -82,6 +79,12 @@ function OrganizationDetails(organization: Props) {
             </span>
           </div>
         </div>
+
+        {organization.organization?.id && (
+          <div className="w-3/4">
+            <ChangeHistory type="organization" id={organization.organization.id} />
+          </div>
+        )}
         
         <div className="">
           <Button variant={"outline"}>

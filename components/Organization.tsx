@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import Pagination from "@/components/Pagination";
 import { useRouter } from "next/navigation";
+import { TagManager } from "@/components/TagManager";
 
 type OrganizationTable = {
   id: number;
@@ -13,6 +14,11 @@ type OrganizationTable = {
   website: string | null;
   country: string | null;
   contact?: Array<any>;
+  tags?: Array<{
+    id: number;
+    name: string;
+    color: string;
+  }>;
 };
 
 interface OrganizationProps {
@@ -36,13 +42,40 @@ const Organization = ({ organization, totalPages, currentPage }: OrganizationPro
     // Use shallow routing to prevent full page reload
     router.push(url.pathname + url.search, { 
       scroll: false,
+      /* @ts-ignore */
       shallow: true 
     });
   };
 
+  const handleTagsUpdate = async (organizationId: number, updatedTags: any[]) => {
+    try {
+      // Update local state immediately for better UX
+      setOrganizations(prevOrgs => 
+        prevOrgs.map(org => 
+          org.id === organizationId ? { ...org, tags: updatedTags } : org
+        )
+      );
+
+      // Fetch the updated organization data to ensure we have the latest state
+      const response = await fetch(`/api/organization/${organizationId}`);
+      if (!response.ok) {
+        throw new Error('Failed to refresh organization data');
+      }
+      
+      const updatedOrg = await response.json();
+      setOrganizations(prevOrgs =>
+        prevOrgs.map(org =>
+          org.id === organizationId ? { ...org, tags: updatedOrg.tags } : org
+        )
+      );
+    } catch (error) {
+      console.error('Error updating tags:', error);
+    }
+  };
+
   return (
     <div className="space-y-4">
-      <div className="min-h-[600px]"> {/* Fixed height container for organizations */}
+      <div className="min-h-fit">
         {organizations?.map((organization) => (
           <div
             key={organization.id}
@@ -56,6 +89,7 @@ const Organization = ({ organization, totalPages, currentPage }: OrganizationPro
                 <a
                   href={organization.website}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="text-xs font-semibold hover:text-blue-400"
                 >
                   {organization.website}
@@ -76,13 +110,19 @@ const Organization = ({ organization, totalPages, currentPage }: OrganizationPro
                   Contacts: {organization.contact.length}
                 </span>
               )}
+              <TagManager
+                entityId={organization.id}
+                entityType="organization"
+                initialTags={organization.tags || []}
+                onTagsUpdate={(tags) => handleTagsUpdate(organization.id, tags)}
+              />
             </div>
             <div className="flex justify-center gap-2 mt-2">
               <Link href={`/organizations/${organization.id}`}>
-                <Button variant={"secondary"}>View Details</Button>
+                <Button variant="secondary">View Details</Button>
               </Link>
               <Link href={`/editOrganization/${organization.id}`}>
-                <Button variant={"secondary"}>Edit Organization</Button>
+                <Button variant="secondary">Edit Organization</Button>
               </Link>
             </div>
           </div>

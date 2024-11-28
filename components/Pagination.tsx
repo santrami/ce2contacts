@@ -20,20 +20,25 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, onPage
       i <= Math.min(totalPages - 1, currentPage + delta);
       i++
     ) {
+      {/* @ts-ignore */}
       range.push(i);
     }
 
     if (currentPage - delta > 2) {
+      {/* @ts-ignore */}
       rangeWithDots.push(1, '...');
     } else {
+      {/* @ts-ignore */}
       rangeWithDots.push(1);
     }
 
     rangeWithDots.push(...range);
 
     if (currentPage + delta < totalPages - 1) {
+      {/* @ts-ignore */}
       rangeWithDots.push('...', totalPages);
     } else if (totalPages > 1) {
+      {/* @ts-ignore */}
       rangeWithDots.push(totalPages);
     }
 

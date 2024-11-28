@@ -56,6 +56,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
   return (
     <>
+    {/* @ts-ignore */}
       <OrganizationDetails organization={data} />
     </>
   );

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { useForm, SubmitHandler, Controller, set } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Select from "react-select";
 import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
-import { useParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,6 +19,7 @@ interface FormValues {
   name: string;
   email: string;
   organizationId: number | string;
+  country: string;
 }
 
 type EditContactFormProps = {
@@ -44,56 +44,44 @@ const EditContactForm: React.FC<EditContactFormProps> = ({
     handleSubmit,
     formState: { errors },
     reset
-  } = useForm<FormValues>({
-    defaultValues: {
-      name: "",
-      email: "",
-      organizationId: "",
-    },
-  });
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [open, setOpen] = useState(false);
+  } = useForm<FormValues>();
 
+  const [open, setOpen] = useState(false);
   const params = useParams();
 
-  const router = useRouter();
-
   useEffect(() => {
-    const contact = async () => {
-      const response = await fetch(`/api/contact/${params!.id}`);
-      const data = await response.json();
-      const {password, ...contact } = data;
-      reset(contact)
+    const fetchContact = async () => {
+      try {
+        const response = await fetch(`/api/contact/${params!.id}`);
+        if (!response.ok) throw new Error('Failed to fetch contact');
+        const contact = await response.json();
+        
+        // Reset form with contact data
+        reset({
+          name: contact.name,
+          email: contact.email,
+          organizationId: contact.organizationId,
+          country: contact.country || ''
+        });
+      } catch (error) {
+        console.error('Error fetching contact:', error);
+      }
     };
-    contact();
-  }, [reset, params]);
+
+    if (params?.id) {
+      fetchContact();
+    }
+  }, [params?.id, reset]);
 
   const organizationOptions = organization.map((org) => ({
     value: org.id,
     label: org.fullName
   }));
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    // Validar los datos del formulario
-
-    // Crear el nuevo contacto
-    const editContact: FormValues = {
-      name: data.name,
-      email: data.email,
-      organizationId: Number(data.organizationId),
-    };
-
-    // Llamar a la función de callback para pasar el nuevo contacto al componente padre
-    onEditContact(editContact);
-
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    await onEditContact(data);
     setOpen(false);
-
-    // Limpiar el formulario después de crear el contacto
-    setName("");
-    setEmail("");
   };
-  
 
   return (
     <div className="flex-col h-auto flex justify-center items-center">
@@ -109,7 +97,7 @@ const EditContactForm: React.FC<EditContactFormProps> = ({
               message: "Name required",
             },
           })}
-          className="p-3 rounded block mb-2 bg-slate-900 text-slate-300 w-full"
+          className="p-3 rounded block mb-2 bg-slate-300 text-slate-900 w-full"
           placeholder="Name"
         />
         {errors.name && (
@@ -117,7 +105,7 @@ const EditContactForm: React.FC<EditContactFormProps> = ({
         )}
 
         <label htmlFor="email" className="text-slate-500 mb-2 block text-sm">
-          email:
+          Email:
         </label>
         <input
           type="email"
@@ -127,12 +115,22 @@ const EditContactForm: React.FC<EditContactFormProps> = ({
               message: "Email required",
             },
           })}
-          className="p-3 rounded block mb-2 bg-slate-900 text-slate-300 w-full"
+          className="p-3 rounded block mb-2 bg-slate-300 text-slate-900 w-full"
           placeholder="email"
         />
         {errors.email && (
           <span className="text-red-500">{errors.email.message}</span>
         )}
+
+        <label htmlFor="country" className="text-slate-500 mb-2 block text-sm">
+          Country:
+        </label>
+        <input
+          type="text"
+          {...register("country")}
+          className="p-3 rounded block mb-2 bg-slate-300 text-slate-900 w-full"
+          placeholder="Country"
+        />
 
         <label
           htmlFor="organizationId"
@@ -149,8 +147,8 @@ const EditContactForm: React.FC<EditContactFormProps> = ({
               ref={ref}
               options={organizationOptions}
               value={organizationOptions.find((c) => c.value === value) ?? ""}
-              // @ts-ignore
-              onChange={(e) => onChange(e.value)}
+              /* @ts-ignore */
+              onChange={(e) => onChange(e?.value)}
               onBlur={onBlur}
               className="text-slate-900 focus:bg-slate-300 focus:text-slate-900"
               placeholder="Select an organization"
@@ -161,8 +159,6 @@ const EditContactForm: React.FC<EditContactFormProps> = ({
         {errors.organizationId && (
           <span className="text-red-500">{errors.organizationId.message}</span>
         )}
-
-        {/**********************  Alert Dialog ************************/}
 
         <AlertDialog open={open} onOpenChange={setOpen}>
           <AlertDialogTrigger asChild>
@@ -185,9 +181,6 @@ const EditContactForm: React.FC<EditContactFormProps> = ({
           </AlertDialogContent>
         </AlertDialog>
       </form>
-      {/* <Button onClick={() => router.push("/")} variant={"secondary"}>
-        back
-      </Button> */}
     </div>
   );
 };

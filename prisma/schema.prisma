@@ -9,10 +9,10 @@ datasource db {
 
 model User {
   id                        Int           @id @default(autoincrement())
-  username                  String        @unique(map: "username") @db.VarChar(255)
-  email                     String        @unique(map: "email") @db.VarChar(255)
-  password                  String        @db.VarChar(255)
-  role                      String        @db.VarChar(255)
+  username                  String        @unique(map: "username") 
+  email                     String        @unique(map: "email")
+  password                  String        
+  role                      String        
   emailResetPassword        String?       @db.Text
   passwordResetTokenExpires DateTime?
   contactId                 Int           @unique
@@ -22,93 +22,149 @@ model User {
 
 model Contact {
   id                   Int             @id @default(autoincrement())
-  name                 String          @db.VarChar(255)
-  email                String          @unique(map: "email") @db.VarChar(255)
+  name                 String          
+  email                String          @unique(map: "email")
   organizationId       Int?
   projectParticipation Boolean
+  network              Boolean         @default(false)
   sectorId             Int?
   termsId              Int?
-  userId               Int?
   country              String?
   sector               Sector?         @relation(fields: [sectorId], references: [id])
   acceptedTerms        Terms?          @relation(fields: [termsId], references: [id])
-  organization         Organization?   @relation(fields: [organizationId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contact_ibfk_1")
-  participation        Participation[]
+  organization         Organization?    @relation(fields: [organizationId], references: [id])
+  activityParticipation ActivityParticipation[]
   user                 User?
+  tags                 TagsOnContacts[]
+  changes              ContactChange[]
+}
 
-  @@index([organizationId], map: "organizationId")
-  @@index([sectorId], map: "Contact_sectorId_fkey")
-  @@index([termsId], map: "Contact_termsId_fkey")
+model ActivityType {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  activities  Activity[]
+}
+
+model Activity {
+  id              Int       @id @default(autoincrement())
+  title           String    
+  description     String?   @db.Text
+  activityTypeId  Int
+  date            DateTime
+  duration        Int?      // Duration in minutes
+  location        String?   // Physical location or URL
+  website         String?   @db.VarChar(255)
+  organizationId  Int?
+  organization    Organization? @relation(fields: [organizationId], references: [id])
+  participants    ActivityParticipation[]
+  activityType    ActivityType @relation(fields: [activityTypeId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([activityTypeId])
+  @@index([organizationId])
+}
+
+model ActivityParticipation {
+  id          Int       @id @default(autoincrement())
+  activityId  Int
+  contactId   Int
+  activity    Activity  @relation(fields: [activityId], references: [id])
+  contact     Contact   @relation(fields: [contactId], references: [id])
+  role        String?   // participant, presenter, moderator
+  attendance  Boolean?  
+  createdAt   DateTime  @default(now())
+
+  @@unique([activityId, contactId])
+  @@index([contactId])
 }
 
 model Organization {
   id           Int       @id @default(autoincrement())
-  acronym      String?   @unique(map: "acronym") @db.VarChar(255)
-  fullName     String    @db.VarChar(255)
-  regionalName String?   @db.VarChar(255)
-  website      String?   @db.VarChar(255)
-  country      String?   @db.VarChar(255)
+  acronym      String?   @unique(map: "acronym")
+  fullName     String    
+  regionalName String?   
+  website      String?   
+  country      String?   
   contact      Contact[]
-  event        Event[]
+  activities   Activity[]
+  tags         TagsOnOrganizations[]
+  changes      OrganizationChange[]
+}
+
+model Tag {
+  id            Int                   @id @default(autoincrement())
+  name          String               @unique
+  color         String?              
+  contacts      TagsOnContacts[]
+  organizations TagsOnOrganizations[]
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+}
+
+model TagsOnContacts {
+  contactId Int
+  tagId     Int
+  contact   Contact @relation(fields: [contactId], references: [id])
+  tag       Tag     @relation(fields: [tagId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@id([contactId, tagId])
+}
+
+model TagsOnOrganizations {
+  organizationId Int
+  tagId         Int
+  organization  Organization @relation(fields: [organizationId], references: [id])
+  tag           Tag         @relation(fields: [tagId], references: [id])
+  createdAt     DateTime    @default(now())
+
+  @@id([organizationId, tagId])
+}
+
+model ContactChange {
+  id        Int      @id @default(autoincrement())
+  contactId Int
+  contact   Contact  @relation(fields: [contactId], references: [id])
+  field     String   
+  oldValue  String?  
+  newValue  String?  
+  changedBy Int      
+  createdAt DateTime @default(now())
+
+  @@index([contactId])
+}
+
+model OrganizationChange {
+  id             Int          @id @default(autoincrement())
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  field          String      
+  oldValue       String?     
+  newValue       String?     
+  changedBy      Int         
+  createdAt      DateTime    @default(now())
+
+  @@index([organizationId])
 }
 
 model Sector {
   id      Int       @id @default(autoincrement())
-  name    String    @db.VarChar(255)
+  name    String    
   Contact Contact[]
 }
 
 model SearchQuery {
-  id     Int    @id @default(autoincrement())
-  query  String
-  userId Int
-  user   User   @relation(fields: [userId], references: [id])
-
-  @@index([userId], map: "SearchQuery_userId_fkey")
-}
-
-model Event {
-  id              Int             @id @default(autoincrement())
-  name            String          @db.VarChar(255)
-  scheduledDate   DateTime        @db.DateTime(0)
-  duration        Int
-  usersRegistered Int
-  usersApproved   Int
-  usersDenied     Int
-  usersCancelled  Int
-  website         String          @db.VarChar(255)
-  organizationId  Int?
-  internalEventId String          @db.VarChar(255)
-  organization    Organization?   @relation(fields: [organizationId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_ibfk_1")
-  participation   Participation[]
-
-  @@index([organizationId], map: "organizationId")
-}
-
-model Participation {
-  id                Int                           @id @default(autoincrement())
-  contactId         Int
-  eventId           Int
-  registrationTime  DateTime?                     @db.DateTime(0)
-  timeParticipation Int?
-  approvalStatus    participation_approvalStatus? @default(pending)
-  isPanelist        Boolean?
-  contact           Contact                       @relation(fields: [contactId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participation_ibfk_1")
-  event             Event                         @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participation_ibfk_2")
-
-  @@index([contactId], map: "contactId")
-  @@index([eventId], map: "eventId")
+  id        Int      @id @default(autoincrement())
+  query     String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  filters   Json?    
+  createdAt DateTime @default(now())
 }
 
 model Terms {
   id          Int       @id @default(autoincrement())
   description String    @db.Text
   Contact     Contact[]
-}
-
-enum participation_approvalStatus {
-  pending
-  approved
-  denied
-  cancelled
 }

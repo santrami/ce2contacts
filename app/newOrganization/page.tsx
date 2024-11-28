@@ -46,14 +46,14 @@ const NewOrganizationPage = () => {
 
   if (session && session.user) {
     return (
-      <div>
+      <div className="flex flex-col gap-16 min-w-full w-2/3">
         <ToastContainer />
         <NewOrganizationForm
           onCreateOrganization={handleCreateContact}
         />
-        {/* <Link href={"/"}>
-          <Button variant={"mystyle"}>Back</Button>
-        </Link> */}
+        <Link style={{display:"flex",alignSelf:"center"}} href={"/"}>
+          <Button variant={"default"}>Back</Button>
+        </Link>
       </div>
     );
   }

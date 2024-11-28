@@ -1,24 +1,23 @@
 import { Button } from "@/components/ui/button";
-import Contact from "@/components/Contact";
 import { CSVLink } from "react-csv";
-import Link from "next/link";
-import Participation from "@/components/Participation";
-import { useRouter } from 'next/navigation'
+import { ChangeHistory } from "@/components/ChangeHistory";
+import { format } from "date-fns";
 
-interface Event {
-  name: string;
-  internalID: number;
-  website: string;
+interface Activity {
+  id: number;
+  title: string;
+  date: string;
+  website?: string;
+  activityType?: {
+    name: string;
+  } | null;
 }
 
-interface ParticipationProps {
+interface ActivityParticipation {
   id: number;
-  contactId: number;
-  organizationId: number;
-  eventId: number;
-  registrationTime: string;
-  timeParticipation: number;
-  event: Event | undefined;
+  activity: Activity;
+  role?: string;
+  attendance?: boolean;
 }
 
 interface Organization {
@@ -35,94 +34,156 @@ interface Sector {
   name: string;
 }
 
+interface Terms {
+  id: number;
+  description: string;
+}
+
 interface Contact {
   id: number;
   name: string;
   email: string;
   organizationId: number;
   projectParticipation: boolean;
-  isActive: boolean;
-  participation: Array<ParticipationProps>;
-  sector:Sector;
+  sector: Sector;
   organization: Organization;
+  activityParticipation: Array<ActivityParticipation>;
+  acceptedTerms: Terms | null;
+  termsId: number | null;
 }
 
 interface Props {
   contact: Contact | undefined;
 }
 
-function ContactDetails(contact: Props) {
-  const router= useRouter();
+function ContactDetails({ contact }: Props) {
+  if (!contact) {
+    return <div>No contact details available</div>;
+  }
+
   const headers = [
     "name",
     "email",
     "organizationFullName",
     "organizationAcronym",
     "projectParticipation",
+    "termsAccepted",
+    "sector",
+    "country"
   ];
-  /*   const csvdata = contact.contact?.contact.map((c) => [
-    c.name,
-    c.email,
-    contact.contact?.fullName,
-    contact.contact?.acronym,
-    c.projectParticipation,
-  ]); */
+  
+  const csvdata = [[
+    contact.name,
+    contact.email,
+    contact.organization?.fullName,
+    contact.organization?.acronym,
+    contact.projectParticipation ? "Yes" : "No",
+    contact.acceptedTerms ? "Yes" : "No",
+    contact.sector?.name || "N/A",
+    contact.organization?.country || "N/A"
+  ]];
 
   return (
-    <>
-      <div className="flex flex-col gap-10 items-center p-6">
-        <div
-          key={contact.contact?.id}
-          className="flex justify-between p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-3/4"
-        >
-          <div className="flex flex-col gap-2 w-full items-center bg-gray-800 p-5">
-            <span className="text-xl font-semibold">
-              {contact.contact?.name}
+    <div className="flex flex-col gap-10 items-center p-6">
+      <div className="flex justify-between p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600 w-3/4">
+        <div className="flex flex-col gap-2 w-full items-center bg-gray-800 p-5">
+          <span className="text-xl font-semibold">{contact.name}</span>
+          <span className="text-sm font-medium">{contact.email}</span>
+          <span className="text-sm text-gray-300">
+            Organization: {contact.organization.fullName}
+          </span>
+          {contact.sector && (
+            <span className="text-sm text-gray-300">
+              Sector: {contact.sector.name}
             </span>
-
-            <span className="text-xs font-semibold">
-              {contact.contact?.email}
-            </span>
-            <span className="text-xs font-semibold">
-              {contact.contact?.organization.fullName}
-            </span>
-              {contact.contact?.sector?.name}
+          )}
+          <div className="mt-2 text-sm">
+            <span className="font-medium">Terms Status: </span>
+            {contact.acceptedTerms ? (
+              <div className="text-green-400">
+                <span>Terms Accepted</span>
+                <p className="text-xs mt-1 text-gray-400">{contact.acceptedTerms.description}</p>
+              </div>
+            ) : (
+              <span className="text-yellow-400">No terms accepted</span>
+            )}
           </div>
-        </div>
-        <div>
-          <div className="flex flex-col justify-center items-center">
-            <Button className="" variant={"secondary"} onClick={()=> router.back()}>
-              back to results
-            </Button>
-            <h1 className="mt-4">Participation in events:</h1>
-          </div>
-        </div>
-        {/* <div className="">
-        <Button  variant={"outline"}>
-          <CSVLink className="text-gray-800" data={csvdata} headers={headers} filename={`contacts from ${contact.contact?.acronym}`} >
-            Download csv
-          </CSVLink>
-        </Button>
-        </div> */}
-        <div className="w-3/4">
-          {contact.contact?.participation && contact.contact.participation.length > 0 ? (
-            contact.contact.participation.map((participation, index) => (
-              <Participation
-                key={index}
-                id={participation.id}
-                organization={contact.contact?.organization.fullName}
-                registrationTime={participation.registrationTime}
-                timeParticipation={participation.timeParticipation}
-                event={participation.event?.name}
-                eventWebsite={participation.event?.website}
-              />
-            ))
-          ) : (
-            <div className="flex justify-center items-center text-slate-300 text-2xl">No activity found</div>
+          {contact.projectParticipation && (
+            <div className="mt-2 px-3 py-1 bg-green-600 rounded-full text-xs font-semibold">
+              Project Participant
+            </div>
           )}
         </div>
       </div>
-    </>
+
+      {contact.id && (
+        <div className="w-3/4">
+          <ChangeHistory type="contact" id={contact.id} />
+        </div>
+      )}
+
+      <div>
+        <div className="flex flex-col justify-center items-center">
+          <Button variant="secondary" onClick={() => window.history.back()}>
+            Back to results
+          </Button>
+          <h1 className="mt-4 text-xl font-semibold">Activity Participation</h1>
+        </div>
+      </div>
+
+      <div className="w-3/4">
+        {contact.activityParticipation && contact.activityParticipation.length > 0 ? (
+          contact.activityParticipation.map((participation, index) => (
+            <div
+              key={index}
+              className="p-3 gap-4 my-3 rounded-xl border-[1px] border-zinc-600"
+            >
+              <div className="flex flex-col gap-2 items-center text-center">
+                <span className="text-xl font-semibold">
+                  {participation.activity.title}
+                </span>
+                <span className="text-sm">
+                  {participation.activity.activityType?.name || 'Unknown Type'}
+                </span>
+                <span className="text-sm">
+                  {format(new Date(participation.activity.date), 'PPP')}
+                </span>
+                {participation.role && (
+                  <span className="text-sm">Role: {participation.role}</span>
+                )}
+                {participation.activity.website && (
+                  <a 
+                    href={participation.activity.website} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-xs font-semibold hover:text-blue-400"
+                  >
+                    {participation.activity.website}
+                  </a>
+                )}
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="flex justify-center items-center text-slate-300 text-2xl">
+            No activity found
+          </div>
+        )}
+      </div>
+
+      <div className="mt-4">
+        <Button variant="outline">
+          <CSVLink
+            data={csvdata}
+            headers={headers}
+            filename={`contact_${contact.name}.csv`}
+            className="text-gray-800"
+          >
+            Download Contact Info
+          </CSVLink>
+        </Button>
+      </div>
+    </div>
   );
 }
 
