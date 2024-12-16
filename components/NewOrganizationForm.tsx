@@ -47,7 +47,7 @@ const NewOrganizationForm: React.FC<NewOrganizationFormProps> = ({ onCreateOrgan
 
   return (
     <div className="form-container">
-      <h2 className="form-header">Create New Organization</h2>
+      <h2 className="form-header">Create New Organisation</h2>
       
       <form onSubmit={handleSubmit(onSubmit)} className="form-group">
         <div>
@@ -126,7 +126,7 @@ const NewOrganizationForm: React.FC<NewOrganizationFormProps> = ({ onCreateOrgan
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This will create a new organization in the system.
+                  This will create a new organisation in the system.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

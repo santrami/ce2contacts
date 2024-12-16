@@ -1,4 +1,29 @@
+version: '3.8'
+
 services:
+  db:
+    image: mysql:8.0
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ce2
+      MYSQL_USER: sramirez
+      MYSQL_PASSWORD: santiago
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - contacts
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "sramirez", "-psantiago"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    command: --default-authentication-plugin=mysql_native_password
+
   app:
     build:
       context: .
@@ -7,38 +32,18 @@ services:
     working_dir: /app
     ports:
       - "3000:3000"
-    networks:
-      - contacts
-    env_file:
-      - .env
+    environment:
+      - DATABASE_URL=mysql://sramirez:santiago@db:3306/ce2
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=H/q+2VpjDSVserGRzKMz8y0gmZhokX1dcZ/0Map78yw=
+      - EMAIL_SERVER_HOST=mail.bsc.es
+      - EMAIL_SERVER_USER=sramirez
+      - EMAIL_SERVER_PASSWORD=@N1m4c10
     depends_on:
       db:
         condition: service_healthy
-  #  volumes:
-  #    - .:/app
-  #    - /app/node_modules
-
-  db:
-    image: mysql:8.0
-    container_name: db
-    restart: always
-    environment:
-    - MYSQL_ROOT_PASSWORD=santiago
-    - MYSQL_DATABASE=ce2
-    - MYSQL_USER=sramirez
-    - MYSQL_PASSWORD=santiago
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql-data:/var/lib/mysql
     networks:
       - contacts
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--silent"]
-      interval: 10s
-      retries: 5
-      start_period: 30s
-      timeout: 10s
 
 volumes:
   mysql-data:

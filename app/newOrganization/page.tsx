@@ -35,7 +35,7 @@ const NewOrganizationPage = () => {
         console.log(errorData);
         throw new Error(errorData.error.meta.target); // Lanza un error con el mensaje del servidor
       } else {
-        toast.success("New organization created");
+        toast.success("New organisation created");
       }
     } catch (error: any) {
       console.error(error);

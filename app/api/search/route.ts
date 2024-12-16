@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prismadb";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -9,174 +12,88 @@ export async function GET(request: NextRequest) {
     const sector = searchParams.get("sector");
     const tags = searchParams.get("tags")?.split(",").filter(Boolean);
 
-    // Save search query if userId is provided and there's a query
-    if (userId && query) {
-      await prisma.searchQuery.create({
-        data: {
-          query,
-          userId: parseInt(userId),
-          filters: { sector, tags }
-        },
-      });
-    }
-
-    // Check if query is a numeric ID
-    if (query && /^\d+$/.test(query)) {
-      const contact = await prisma.contact.findUnique({
-        where: {
-          id: parseInt(query)
-        },
-        include: {
-          organization: true,
-          sector: true,
-          tags: {
-            include: {
-              tag: true
-            }
-          }
-        }
-      });
-
-      if (contact) {
-        // Transform contact data
-        const transformedContact = {
-          ...contact,
-          tags: contact.tags.map(t => ({
-            id: t.tag.id,
-            name: t.tag.name,
-            color: t.tag.color
-          }))
-        };
-
-        return NextResponse.json({ contact: transformedContact });
-      }
+    // Base conditions for organizations
+    const organizationWhere: any = {};
+    
+    // Add text search conditions if query exists
+    if (query) {
+      organizationWhere.OR = [
+        { fullName: { contains: query } },
+        { acronym: { contains: query } },
+        { regionalName: { contains: query } },
+      ];
     }
 
     // Base conditions for contacts
-    const contactWhere: any = {
-      AND: []
-    };
+    const contactWhere: any = {};
 
     // Add text search conditions if query exists
     if (query) {
-      contactWhere.AND.push({
-        OR: [
-          { name: { contains: query } },
-          { email: { contains: query } },
-          { 
-            organization: {
-              OR: [
-                { fullName: { contains: query } },
-                { acronym: { contains: query } },
-                { regionalName: { contains: query } },
-              ]
-            } 
-          }
-        ]
-      });
-    }
-
-    // Add sector filter if present
-    if (sector) {
-      contactWhere.AND.push({ sectorId: parseInt(sector) });
-    }
-
-    // Add tags filter if present
-    if (tags && tags.length > 0) {
-      const tagIds = tags.map(id => parseInt(id));
-      contactWhere.AND.push({
-        tags: {
-          some: {
-            tagId: {
-              in: tagIds
-            }
-          }
-        }
-      });
-    }
-
-    // If no conditions were added, remove the empty AND array
-    if (contactWhere.AND.length === 0) {
-      delete contactWhere.AND;
-    }
-
-    // Only fetch organizations if no sector filter is applied
-    const [organizations, contacts] = await Promise.all([
-      !sector ? prisma.organization.findMany({
-        where: {
-          ...(query && {
+      contactWhere.OR = [
+        { name: { contains: query } },
+        { email: { contains: query } },
+        { 
+          organization: {
             OR: [
               { fullName: { contains: query } },
               { acronym: { contains: query } },
               { regionalName: { contains: query } },
             ]
-          }),
-          ...(tags?.length && {
-            tags: {
-              some: {
-                tagId: {
-                  in: tags.map(id => parseInt(id))
-                }
-              }
-            }
-          })
+          } 
+        }
+      ];
+    }
+
+    // Add sector filter if present
+    if (sector) {
+      contactWhere.sectorId = parseInt(sector);
+    }
+
+    // Handle numeric ID search if query exists
+    if (query && /^\d+$/.test(query)) {
+      const contact = await prisma.contact.findUnique({
+        where: {
+          id: Number(query)
         },
         include: {
-          contact: true,
-          tags: {
-            include: {
-              tag: true
-            }
-          }
+          organization: true,
+          sector: true
         }
-      }) : [],
+      });
+
+      if (contact) {
+        return NextResponse.json({ contact });
+      }
+    }
+
+    // Search both organizations and contacts
+    const [organization, contacts] = await Promise.all([
+      prisma.organization.findMany({
+        where: organizationWhere,
+        include: {
+          contact: true
+        }
+      }),
       prisma.contact.findMany({
         where: contactWhere,
         include: {
           organization: true,
-          sector: true,
-          tags: {
-            include: {
-              tag: true
-            }
-          }
+          sector: true
         }
       })
     ]);
 
-    // Transform the data to include tags
-    const transformedContacts = contacts.map(contact => ({
-      ...contact,
-      tags: contact.tags.map(t => ({
-        id: t.tag.id,
-        name: t.tag.name,
-        color: t.tag.color
-      }))
-    }));
+    // Save search query if it exists
+    if (query && userId) {
+      await prisma.searchQuery.create({
+        data: {
+          query,
+          userId: Number(userId)
+        },
+      });
+    }
 
-    const transformedOrganizations = organizations.map(org => ({
-      ...org,
-      tags: org.tags.map(t => ({
-        id: t.tag.id,
-        name: t.tag.name,
-        color: t.tag.color
-      }))
-    }));
-
-    // Get total counts
-    const totalContacts = transformedContacts.length;
-    const totalOrganizations = transformedOrganizations.length;
-
-    return NextResponse.json({
-      organization: transformedOrganizations,
-      contacts: transformedContacts,
-      counts: {
-        contacts: totalContacts,
-        organizations: totalOrganizations,
-        total: totalContacts + totalOrganizations
-      }
-    });
-
+    return NextResponse.json({ organization, contacts });
   } catch (error) {
     console.error("Search error:", error);
     return NextResponse.json(

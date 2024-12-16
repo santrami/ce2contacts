@@ -1,30 +1,43 @@
-FROM node:18-alpine
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files first
-COPY package*.json ./
-
-# Copy Prisma schema and migrations
-COPY prisma ./prisma/
-
 # Install dependencies
+COPY package*.json ./
+COPY prisma ./prisma/
 RUN npm install
 
-# Generate Prisma client
+# Generate Prisma Client
 RUN npx prisma generate
 
-# Copy the rest of the application
+# Copy source
 COPY . .
 
-# Add wait-for-it script
-COPY wait-for-it.sh /wait-for-it.sh
-RUN chmod +x /wait-for-it.sh
-
-# Build the application
+# Build application
 RUN npm run build
+
+# Production image
+FROM node:18-alpine AS runner
+
+WORKDIR /app
+
+# Install production dependencies
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/prisma ./prisma/
+RUN npm install --production
+
+# Copy built application
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/prisma ./prisma
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Install netcat
+RUN apk add --no-cache netcat-openbsd
 
 EXPOSE 3000
 
-# Use wait-for-it to ensure database is ready before starting
-CMD ["/wait-for-it.sh", "db:3306", "--", "npm", "run", "start"]
+ENTRYPOINT ["docker-entrypoint.sh"]

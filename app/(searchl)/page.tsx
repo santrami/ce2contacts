@@ -150,7 +150,7 @@ export default function Home() {
                 </div>
               )}
 
-              {data.organization && data.organization.length > 0 && (
+              {/* {data.organization && data.organization.length > 0 && (
                 <div className="mt-8">
                   <h2 className="text-2xl font-semibold mb-4">Organizations</h2>
                   <Organization 
@@ -159,7 +159,7 @@ export default function Home() {
                     currentPage={1}
                   />
                 </div>
-              )}
+              )} */}
 
               {(!data.contacts?.length && !data.organization?.length) && (
                 <div className="text-center p-4">No results found</div>

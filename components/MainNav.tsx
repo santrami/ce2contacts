@@ -53,7 +53,7 @@ const routes = [
     color: "text-orange-700",
   },
   {
-    label: "New Organization",
+    label: "New Organisation",
     icon: Building2,
     href: "/newOrganization",
     color: "text-emerald-500",
