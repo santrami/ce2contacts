@@ -8,7 +8,7 @@
 contacts-app.tar
 docker-compose2.yml
 Dockerfile2
-
+ce2contacts.tar
 
 # testing
 /coverage
