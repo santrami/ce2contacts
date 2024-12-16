@@ -9,6 +9,7 @@ contacts-app.tar
 docker-compose2.yml
 Dockerfile2
 ce2contacts.tar
+clean-duplicates.sql
 
 # testing
 /coverage
