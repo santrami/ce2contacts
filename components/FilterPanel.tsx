@@ -3,8 +3,6 @@
 import { useState, useCallback, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "./ui/button"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
-import { ChevronDown, ChevronUp, Filter } from "lucide-react"
 import Select from "react-select"
 import Spinner from "./Spinner"
 
@@ -16,7 +14,6 @@ interface FilterPanelProps {
 export function FilterPanel() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [isOpen, setIsOpen] = useState(false);
   const [tags, setTags] = useState<Array<{ id: number; name: string; color: string }>>([]);
   const [sectors, setSectors] = useState<Array<{ id: number; name: string }>>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -121,63 +118,51 @@ export function FilterPanel() {
   }));
 
   return (
-    <div className="w-full max-w-3xl mx-auto mt-4">
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger asChild>
-          <Button variant="outline" className="w-full flex justify-between bg-white text-gray-900">
-            <span className="flex items-center gap-2">
-              <Filter className="h-4 w-4" />
-              Filters
-            </span>
-            {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          </Button>
-        </CollapsibleTrigger>
-        <CollapsibleContent className="mt-4 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Sector</label>
-              <Select
-                options={sectorOptions}
-                value={sectorOptions.find(s => s.value === filters.sector)}
-                onChange={(option) => handleFilterChange("sector", option?.value)}
-                isClearable
-                placeholder="Select sector..."
-                className="text-black"
-                classNamePrefix="react-select"
-              />
-            </div>
+    <div className="w-full max-w-3xl mx-auto mt-4 bg-gray-800 p-6 rounded-lg">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Sector</label>
+          <Select
+            options={sectorOptions}
+            value={sectorOptions.find(s => s.value === filters.sector)}
+            onChange={(option) => handleFilterChange("sector", option?.value)}
+            isClearable
+            placeholder="Select sector..."
+            className="text-black"
+            classNamePrefix="react-select"
+          />
+        </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Tags</label>
-              <Select
-                isMulti
-                options={tags.map(t => ({ 
-                  value: t.id.toString(), 
-                  label: t.name,
-                  color: t.color 
-                }))}
-                value={tags
-                  .map(t => ({ value: t.id.toString(), label: t.name }))
-                  .filter(t => filters.tags.includes(t.value))}
-                onChange={(options) => handleFilterChange("tags", options?.map(o => o.value) || [])}
-                isClearable
-                placeholder="Select tags..."
-                className="text-black"
-                classNamePrefix="react-select"
-              />
-            </div>
-          </div>
-          <div className="flex justify-end">
-            <Button
-              variant="outline"
-              onClick={clearFilters}
-              className="bg-white text-gray-900 hover:bg-gray-100"
-            >
-              Clear Filters
-            </Button>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Tags</label>
+          <Select
+            isMulti
+            options={tags.map(t => ({ 
+              value: t.id.toString(), 
+              label: t.name,
+              color: t.color 
+            }))}
+            value={tags
+              .map(t => ({ value: t.id.toString(), label: t.name }))
+              .filter(t => filters.tags.includes(t.value))}
+            onChange={(options) => handleFilterChange("tags", options?.map(o => o.value) || [])}
+            isClearable
+            placeholder="Select tags..."
+            className="text-black"
+            classNamePrefix="react-select"
+          />
+        </div>
+      </div>
+      
+      <div className="flex justify-center mt-6">
+        <Button
+          variant="ce2"
+          onClick={clearFilters}
+          className="px-8"
+        >
+          Clear Filters
+        </Button>
+      </div>
     </div>
   );
 }

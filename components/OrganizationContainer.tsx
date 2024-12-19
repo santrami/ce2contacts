@@ -9,6 +9,7 @@ export function OrganizationContainer() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -20,8 +21,14 @@ export function OrganizationContainer() {
         
         const page = parseInt(searchParams?.get('page') || '1');
         const sector = searchParams?.get('sector');
+        const tags = searchParams?.get('tags');
         
-        const response = await fetch(`/api/organization?page=${page}${sector ? `&sector=${sector}` : ''}`);
+        const queryParams = new URLSearchParams();
+        queryParams.set('page', page.toString());
+        if (sector) queryParams.set('sector', sector);
+        if (tags) queryParams.set('tags', tags);
+        
+        const response = await fetch(`/api/organization?${queryParams.toString()}`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch organizations');
@@ -29,19 +36,29 @@ export function OrganizationContainer() {
 
         const data = await response.json();
         
+        if (!data.organizations || !Array.isArray(data.organizations)) {
+          throw new Error('Invalid data format received');
+        }
+
         setOrganizations(data.organizations);
         setTotalPages(data.totalPages);
         setCurrentPage(data.currentPage);
+        setIsLoading(false);
       } catch (err) {
         console.error('Error fetching organizations:', err);
         setError('Failed to load organizations. Please try again.');
-      } finally {
-        setIsLoading(false);
+        
+        // Retry logic
+        if (retryCount < 3) {
+          setTimeout(() => {
+            setRetryCount(prev => prev + 1);
+          }, 1000 * (retryCount + 1)); // Exponential backoff
+        }
       }
     };
 
     fetchOrganizations();
-  }, [searchParams]);
+  }, [searchParams, retryCount]);
 
   const handlePageChange = (page: number) => {
     const url = new URL(window.location.href);
@@ -70,6 +87,7 @@ export function OrganizationContainer() {
       );
     } catch (error) {
       console.error('Error updating tags:', error);
+      setError('Failed to update tags. Please try again.');
     }
   };
 
@@ -78,7 +96,10 @@ export function OrganizationContainer() {
       <div className="text-center p-4 text-red-500">
         {error}
         <button 
-          onClick={() => window.location.reload()} 
+          onClick={() => {
+            setRetryCount(0);
+            setError(null);
+          }} 
           className="ml-2 underline"
         >
           Retry

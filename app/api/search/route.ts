@@ -12,9 +12,39 @@ export async function GET(request: NextRequest) {
     const sector = searchParams.get("sector");
     const tags = searchParams.get("tags")?.split(",").filter(Boolean);
 
-    // Base conditions for organizations
+    // Base conditions for organizations and contacts
     const organizationWhere: any = {};
+    const contactWhere: any = {};
     
+    // Add sector filter if present
+    if (sector) {
+      contactWhere.sectorId = parseInt(sector);
+      organizationWhere.contact = {
+        some: {
+          sectorId: parseInt(sector)
+        }
+      };
+    }
+
+    // Add tags filter if present
+    if (tags && tags.length > 0) {
+      const tagIds = tags.map(id => parseInt(id));
+      organizationWhere.tags = {
+        some: {
+          tagId: {
+            in: tagIds
+          }
+        }
+      };
+      contactWhere.tags = {
+        some: {
+          tagId: {
+            in: tagIds
+          }
+        }
+      };
+    }
+
     // Add text search conditions if query exists
     if (query) {
       organizationWhere.OR = [
@@ -22,13 +52,7 @@ export async function GET(request: NextRequest) {
         { acronym: { contains: query } },
         { regionalName: { contains: query } },
       ];
-    }
 
-    // Base conditions for contacts
-    const contactWhere: any = {};
-
-    // Add text search conditions if query exists
-    if (query) {
       contactWhere.OR = [
         { name: { contains: query } },
         { email: { contains: query } },
@@ -44,11 +68,6 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    // Add sector filter if present
-    if (sector) {
-      contactWhere.sectorId = parseInt(sector);
-    }
-
     // Handle numeric ID search if query exists
     if (query && /^\d+$/.test(query)) {
       const contact = await prisma.contact.findUnique({
@@ -57,7 +76,12 @@ export async function GET(request: NextRequest) {
         },
         include: {
           organization: true,
-          sector: true
+          sector: true,
+          tags: {
+            include: {
+              tag: true
+            }
+          }
         }
       });
 
@@ -66,19 +90,29 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Search both organizations and contacts
-    const [organization, contacts] = await Promise.all([
+    // Search both organizations and contacts with filters
+    const [organizations, contacts] = await Promise.all([
       prisma.organization.findMany({
         where: organizationWhere,
         include: {
-          contact: true
+          contact: true,
+          tags: {
+            include: {
+              tag: true
+            }
+          }
         }
       }),
       prisma.contact.findMany({
         where: contactWhere,
         include: {
           organization: true,
-          sector: true
+          sector: true,
+          tags: {
+            include: {
+              tag: true
+            }
+          }
         }
       })
     ]);
@@ -88,12 +122,16 @@ export async function GET(request: NextRequest) {
       await prisma.searchQuery.create({
         data: {
           query,
-          userId: Number(userId)
+          userId: Number(userId),
+          filters: {
+            sector,
+            tags
+          }
         },
       });
     }
 
-    return NextResponse.json({ organization, contacts });
+    return NextResponse.json({ organizations, contacts });
   } catch (error) {
     console.error("Search error:", error);
     return NextResponse.json(

@@ -168,11 +168,11 @@ const Contact: React.FC<ContactProps> = ({ contact, orgname }) => {
       <div className="flex gap-2">
         {/* @ts-ignore */}
         <Link href={`/contacts/${contact.id}`}>
-          <Button variant={"secondary"}>See Activity</Button>
+          <Button variant={"ce2"}>See Activity</Button>
         </Link>
         {/* @ts-ignore */}
         <Link href={`/editContact/${contact.id}`}>
-          <Button variant={"secondary"}>Edit Contact</Button>
+          <Button variant={"ce2"}>Edit Contact</Button>
         </Link>
       </div>
     </div>

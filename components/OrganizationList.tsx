@@ -85,10 +85,10 @@ export function OrganizationList({
             </div>
             <div className="flex justify-center gap-2 mt-2">
               <Link href={`/organizations/${organization.id}`}>
-                <Button variant="secondary">View Details</Button>
+                <Button variant="ce2">View Details</Button>
               </Link>
               <Link href={`/editOrganization/${organization.id}`}>
-                <Button variant="secondary">Edit Organization</Button>
+                <Button variant="ce2">Edit Organisation</Button>
               </Link>
             </div>
           </div>

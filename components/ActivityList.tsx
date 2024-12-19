@@ -36,13 +36,13 @@ export function ActivityList({ activities }: ActivityListProps) {
             </div>
             <div className="flex gap-2">
               <Link href={`/activities/${activity.id}/participants`}>
-                <Button variant="outline" size="sm">
+                <Button variant="ce2" size="sm">
                   <UserPlus className="h-4 w-4 mr-1" />
                   Add Participant
                 </Button>
               </Link>
               <Link href={`/activities/${activity.id}`}>
-                <Button variant="secondary" size="sm">View Details</Button>
+                <Button variant="ce2" size="sm">View Details</Button>
               </Link>
             </div>
           </div>

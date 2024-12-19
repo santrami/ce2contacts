@@ -142,7 +142,7 @@ export default function ActivityDetailsPage() {
         <div>
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold">Participants ({activity.participants.length})</h3>
-            <Button onClick={() => router.push(`/activities/${activity.id}/participants`)}>
+            <Button variant={"ce2"} onClick={() => router.push(`/activities/${activity.id}/participants`)}>
               Add Participant
             </Button>
           </div>

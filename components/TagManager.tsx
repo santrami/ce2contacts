@@ -127,7 +127,7 @@ export function TagManager({
           value={newTagName}
           onChange={(e) => setNewTagName(e.target.value)}
           placeholder="New tag name..."
-          className="max-w-[200px]"
+          className="max-w-[200px] bg-slate-100 bg-opacity-90"
         />
         <div className="relative">
           <Button

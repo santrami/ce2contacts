@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 export async function sendVerificationEmail(email: string, token: string) {
   const verificationUrl = `https://ce2contacts.earth.bsc.es/reset-password/${token}`;
   await transporter.sendMail({
-    from: '"Climateurope2 Contacts" <santiago.ramirez@bsc.es>',
+    from: '"Climateurope2 Contacts" <noreply_ce2contacts@bsc.es>',
     to: email,
     subject: "Password Reset Request for Climateurope2 contacts-app Account",
     html: `
@@ -23,7 +23,7 @@ export async function sendVerificationEmail(email: string, token: string) {
       
       <p><a href="${verificationUrl}" style="background-color: #4CAF50; color: white; padding: 14px 20px; text-decoration: none; border-radius: 4px;">Reset Password</a></p>
       
-      <p>This link will expire in 60 minutes for your security. If you didn't request this password reset, please ignore this email or contact our support team immediately at santiago.ramirez@bsc.es.</p>
+      <p>This link will expire in 60 minutes for your security. If you didn't request this password reset, please ignore this email or contact our support team immediately.</p>
       
       <p>For your security:</p>
       <ul>
@@ -32,7 +32,7 @@ export async function sendVerificationEmail(email: string, token: string) {
         <li>Access the link only from a trusted device</li>
       </ul>
       
-      <p>Need help? Contact our support team 24/7.</p>
+      <p>If you need help, please contact our support team</p>
       
       <p>Best regards,<br>Climateurope2 Team</p>
     `,
@@ -42,7 +42,7 @@ export async function sendVerificationEmail(email: string, token: string) {
 export async function sendPasswordResetEmail(email: string, token: string) {
   const resetPasswordUrl = `https://ce2contacts.earth.bsc.es/reset-password/${encodeURIComponent(token)}`;
   await transporter.sendMail({
-    from: '"Climateurope2 Contacts" <santiago.ramirez@bsc.es>',
+    from: '"Climateurope2 Contacts" <noreply_ce2contacts@bsc.es>',
     to: email,
     subject: "Password Reset Request",
     html: `
@@ -52,7 +52,7 @@ export async function sendPasswordResetEmail(email: string, token: string) {
       
       <p><a href="${resetPasswordUrl}" style="background-color: #4CAF50; color: white; padding: 14px 20px; text-decoration: none; border-radius: 4px;">Reset Password</a></p>
       
-      <p>This link will expire in 60 minutes for your security. If you didn't request this password reset, please ignore this email or contact our support team immediately at santiago.ramirez@bsc.es.</p>
+      <p>This link will expire in 60 minutes for your security. If you didn't request this password reset, please ignore this email or contact our support team immediately</p>
       
       <p>For your security:</p>
       <ul>
@@ -61,7 +61,7 @@ export async function sendPasswordResetEmail(email: string, token: string) {
         <li>Access the link only from a trusted device</li>
       </ul>
       
-      <p>Need help? Contact our support team 24/7.</p>
+      <p>If you need help, please contact our support team</p>
       
       <p>Best regards,<br>Climateurope2 Team</p>
     `,
@@ -70,7 +70,7 @@ export async function sendPasswordResetEmail(email: string, token: string) {
 
 export async function sendNewPasswordEmail(email: string, newPassword: string) {
   await transporter.sendMail({
-    from: '"Climateurope2 Contacts" <santiago.ramirez@bsc.es>',
+    from: '"Climateurope2 Contacts" <noreply_ce2contacts@bsc.es>',
     to: email,
     subject: "Your ce2contacts Password Has Been Reset",
     html: `
@@ -84,7 +84,7 @@ export async function sendNewPasswordEmail(email: string, newPassword: string) {
       <ol>
         <li>Logging into your account</li>
         <li>Changing your password</li>
-        <li>Contacting our security team at santiago.ramirez@bsc.es</li>
+        <li>Contacting our security team</li>
       </ol>
       
       <p>Best regards,<br>ce2contacts team</p>
